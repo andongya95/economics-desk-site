@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F5EFE2">
+<title>Economics Desk · A Research Workbench</title>
+<style>
+/* ============================================================
+   ECONOMICS DESK — Editorial / academic-publishing skin.
+   Cloud-only research workbench: cream stock, oxblood-forest-
+   gold palette, serif display, hairline rules, book-spine nav.
+   Zero external deps. Inline SVG only. Cloud data (Supabase).
+   ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --paper:#F5EFE2;--paper-2:#EDE5D3;--card:#FBF7EE;--card-2:#F3ECDC;
+  --ink:#211C15;--ink-2:#3B342A;--muted:#6E6455;--faint:#9A9080;
+  --rule:#D9CFBB;--rule-2:#C7BBA2;
+  --oxblood:#8A2A2A;--oxblood-2:#6E1F1F;--oxblood-bg:#F3E0DC;
+  --forest:#3E5B3A;--forest-2:#2F4A2C;--forest-bg:#E6EDDF;
+  --gold:#9A6B14;--gold-2:#7C540E;--gold-bg:#F3E7CC;
+  --navy:#2C3E5A;--navy-bg:#E1E7EE;
+  --serif:Georgia,"Times New Roman","Iowan Old Style",Cambria,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  --r:3px;
+}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-size:15px;line-height:1.6;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 20px);
+  background-image:radial-gradient(circle at 20% 10%,rgba(0,0,0,.015) 1px,transparent 1px),radial-gradient(circle at 70% 60%,rgba(0,0,0,.015) 1px,transparent 1px);
+  background-size:22px 22px,26px 26px}
+::selection{background:var(--oxblood);color:var(--paper)}
+
+/* ---- Buttons ---- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--rule-2);
+  border-radius:var(--r);cursor:pointer;font-family:var(--sans);font-size:12px;font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase;min-height:44px;padding:0 15px;background:var(--card);
+  color:var(--ink);transition:all .16s ease;text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--ink);background:var(--card-2)}
+.btn:active{transform:translateY(1px)}
+.btn:focus-visible{outline:2px solid var(--oxblood);outline-offset:2px}
+.btn:disabled{opacity:.55;cursor:default;transform:none}
+.btn svg{opacity:.85;flex:none}
+.btn-primary{background:var(--oxblood);color:var(--paper);border-color:var(--oxblood-2)}
+.btn-primary:hover{background:var(--oxblood-2);border-color:var(--oxblood-2)}
+.btn-secondary{background:var(--card);color:var(--ink-2)}
+.btn-ghost{background:var(--paper-2);color:var(--ink-2);border-color:var(--rule)}
+.btn-ghost:hover{background:var(--card-2)}
+.btn-danger{background:var(--oxblood-bg);color:var(--oxblood-2);border-color:#E0BBB5}
+.btn-danger:hover{background:#EFD3CD;border-color:var(--oxblood)}
+.btn-sm{min-height:40px;padding:0 12px;font-size:10.5px}
+.btn-block{width:100%;min-height:48px;font-size:12.5px}
+.btn-icon{min-width:40px;min-height:40px;padding:0 8px;background:transparent;border:1px solid var(--rule);color:var(--faint)}
+.btn-icon:hover{color:var(--ink);border-color:var(--rule-2);background:var(--card)}
+.btn-icon.del:hover{color:var(--oxblood);border-color:#E0BBB5;background:var(--oxblood-bg)}
+
+/* ---- Sign-in view ---- */
+#authView{display:none;min-height:100vh;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top,0) + 30px) 20px calc(env(safe-area-inset-bottom,0) + 30px)}
+#authView.on{display:flex}
+.auth-shell{width:100%;max-width:420px}
+.auth-brand{text-align:center;margin-bottom:26px}
+.auth-brand .badge{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--paper);
+  display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+.auth-brand h1{font-family:var(--serif);font-size:34px;font-weight:700;font-style:italic;letter-spacing:-.02em;line-height:1}
+.auth-brand .tag{font-family:var(--sans);font-size:9.5px;font-weight:700;color:var(--oxblood);
+  letter-spacing:.24em;text-transform:uppercase;margin-top:9px}
+.auth-brand .rule{width:52px;height:2px;background:var(--ink);margin:16px auto 0}
+.auth-panel{background:var(--card);border:1px solid var(--rule-2);border-top:4px solid var(--oxblood);
+  border-radius:var(--r);padding:26px 24px;box-shadow:0 12px 40px -18px rgba(33,28,21,.4)}
+.auth-panel h2{font-family:var(--serif);font-size:22px;font-weight:700;font-style:italic;margin-bottom:4px}
+.auth-panel .lede{font-size:12.5px;color:var(--muted);margin-bottom:20px;font-style:italic}
+.auth-fields{display:flex;flex-direction:column;gap:15px}
+.auth-msg{display:none;font-size:13px;line-height:1.5;margin-top:16px;padding:11px 14px;
+  border-radius:var(--r);font-style:italic}
+.auth-msg.error{display:block;background:var(--oxblood-bg);color:var(--oxblood-2);border:1px solid #E0BBB5}
+.auth-msg.notice{display:block;background:var(--gold-bg);color:#6E4C0E;border:1px solid #E0CE9E}
+.auth-toggle{margin-top:18px;font-size:13px;color:var(--muted);text-align:center;font-style:italic}
+.auth-toggle a{color:var(--oxblood);font-weight:600;cursor:pointer;text-decoration:underline;font-style:normal}
+.auth-foot{text-align:center;font-size:11px;color:var(--faint);margin-top:20px;line-height:1.6;font-style:italic}
+
+/* ---- App view ---- */
+#appView{display:none}
+#appView.on{display:block}
+header{background:var(--paper);border-bottom:3px double var(--ink);position:sticky;top:0;z-index:30}
+.hd{max-width:1160px;margin:0 auto;padding:14px 26px calc(12px + env(safe-area-inset-top,0));
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.rule-top{max-width:1160px;margin:0 auto;padding:6px 26px 0;display:flex;justify-content:space-between;
+  font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--oxblood)}
+.rule-top span:nth-child(2){color:var(--muted)}
+.logo{display:flex;align-items:center;gap:13px;white-space:nowrap}
+.logo .badge{width:42px;height:42px;border-radius:50%;background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;flex:none}
+.logo .name{display:flex;flex-direction:column;gap:1px}
+.logo .name b{font-family:var(--serif);font-size:25px;font-weight:700;letter-spacing:-.02em;font-style:italic;line-height:1}
+.logo .name .sub{font-family:var(--sans);font-size:8.5px;font-weight:700;color:var(--oxblood);
+  letter-spacing:.22em;text-transform:uppercase}
+.hd .date{font-family:var(--serif);color:var(--ink-2);font-size:14px;margin-left:auto;font-style:italic}
+
+/* ---- Shell + top rail nav ---- */
+.layout{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:0}
+.rail{position:sticky;top:0;z-index:30;display:flex;flex-direction:row;align-items:center;gap:12px;
+  padding:10px 18px;background:var(--card);border-bottom:2px solid var(--ink)}
+.rail .shelf-lbl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--faint);writing-mode:horizontal-tb;transform:none;flex:none}
+.spines{flex:1;display:flex;flex-direction:row;align-items:stretch;gap:6px;overflow-x:auto;
+  padding:2px 0;scrollbar-width:thin}
+.spine{position:relative;flex:1 0 auto;min-width:86px;min-height:38px;border:1px solid var(--rule-2);
+  border-bottom:3px solid var(--sp,var(--oxblood));border-radius:3px 3px 2px 2px;background:var(--card);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .16s ease;
+  box-shadow:1px 1px 0 var(--rule)}
+.spine span{writing-mode:horizontal-tb;transform:none;font-family:var(--serif);font-size:12.5px;
+  font-weight:600;letter-spacing:.04em;color:var(--ink-2);white-space:nowrap}
+.spine:hover{background:var(--card-2);transform:translateY(-1px)}
+.spine.active{background:var(--sp,var(--oxblood));box-shadow:2px 2px 0 var(--rule-2)}
+.spine.active span{color:var(--paper)}
+.account{margin-left:auto;margin-top:0;border-top:none;padding-top:0;display:flex;flex-direction:row;
+  align-items:center;gap:8px;flex:none;position:relative}
+.acct-btn{display:flex;align-items:center;gap:7px;min-height:40px;background:var(--card-2);
+  border:1px solid var(--rule-2);border-radius:4px;padding:6px 11px;cursor:pointer;
+  font-family:var(--serif);font-style:italic;font-size:12.5px;color:var(--ink-2);transition:all .15s ease}
+.acct-btn:hover{background:var(--paper-2);border-color:var(--rule)}
+.acct-btn svg{flex:none}
+.acct-menu{position:absolute;right:0;top:calc(100% + 7px);min-width:200px;background:var(--card);
+  border:1px solid var(--rule-2);border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.16);
+  padding:6px;display:none;z-index:60}
+.acct-menu.open{display:block}
+.acct-menu .m-item{display:flex;align-items:center;gap:9px;width:100%;padding:10px 12px;border:none;
+  background:none;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink-2);
+  text-align:left;min-height:40px}
+.acct-menu .m-item:hover{background:var(--paper-2)}
+.acct-menu .m-item.danger{color:var(--oxblood)}
+.account .who{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-style:italic;font-size:12px;
+  color:var(--ink-2);line-height:1.3}
+.account .who svg{flex:none;color:var(--oxblood)}
+.account .who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+main{padding:22px 26px 40px;min-width:0}
+
+/* ---- Page head ---- */
+.page-head{display:flex;align-items:flex-end;gap:14px;margin-bottom:20px;flex-wrap:wrap;
+  border-bottom:2px solid var(--ink);padding-bottom:12px}
+.page-head .folio{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);border:1px solid var(--rule-2);border-radius:2px;padding:3px 7px;flex:none}
+.page-head h1{font-family:var(--serif);font-size:29px;font-weight:700;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:11px;color:var(--ink);line-height:1}
+.page-head h1 svg{flex:none;color:var(--accent,var(--oxblood))}
+.page-head .hint{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;
+  font-family:var(--sans);padding-bottom:4px}
+.page-head .sp{flex:1}
+
+/* ---- Cards ---- */
+.card{background:var(--card);border:1px solid var(--rule);border-radius:var(--r);margin-bottom:24px;
+  overflow:hidden;box-shadow:0 1px 0 var(--rule)}
+.card-head{display:flex;align-items:center;gap:12px;padding:15px 20px 12px;border-bottom:1px solid var(--rule)}
+.card-head .folio{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--faint);border:1px solid var(--rule-2);border-radius:2px;padding:3px 6px;flex:none}
+.card-head h2{font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:-.01em;
+  display:flex;align-items:center;gap:10px;color:var(--ink)}
+.card-head h2 svg{flex:none;color:var(--accent,var(--oxblood))}
+.card-head .hint{font-size:10.5px;font-weight:600;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.card-head .sp{flex:1}
+.card-body{padding:18px 20px}
+.foot-note{font-family:var(--serif);font-style:italic;font-size:12px;color:var(--muted);
+  padding:0 20px 14px;border-top:1px solid var(--rule);padding-top:11px;display:flex;gap:8px;align-items:baseline}
+.foot-note .dag{color:var(--oxblood);font-weight:700;flex:none}
+
+/* ---- Today focus ---- */
+.focus-card{border-top:4px solid var(--oxblood)}
+.focus-card .card-head h2{font-style:italic}
+.focus-item{display:flex;align-items:center;gap:13px;padding:13px 4px;border-bottom:1px solid var(--rule);
+  transition:background .14s ease;flex-wrap:wrap}
+.focus-item:last-child{border-bottom:none}
+.focus-item:hover{background:var(--card-2)}
+.focus-item.overdue{background:var(--oxblood-bg);border-bottom-color:#E0BBB5;padding:13px 12px;
+  border-radius:var(--r);border-left:3px solid var(--oxblood);margin-bottom:2px}
+.focus-item .txt{flex:1;min-width:140px}
+.focus-item .txt .t{font-family:var(--serif);font-weight:600;font-size:16px;word-break:break-word;color:var(--ink)}
+.focus-item .txt .s{font-size:12px;color:var(--muted);margin-top:2px}
+.focus-item.overdue .t{color:var(--oxblood-2)}
+.focus-item .fops{display:flex;gap:6px;flex:none}
+
+/* ---- Tags ---- */
+.tag{display:inline-flex;align-items:center;font-family:var(--sans);font-size:9.5px;font-weight:700;
+  border-radius:2px;padding:3px 8px;white-space:nowrap;flex:none;letter-spacing:.08em;text-transform:uppercase;
+  line-height:1.4;border:1px solid transparent}
+.tag-od{background:var(--oxblood);color:var(--paper)}
+.tag-due{background:var(--gold);color:var(--paper)}
+.tag-soon{background:var(--navy);color:var(--paper)}
+.tag-p0{background:var(--oxblood);color:var(--paper)}.tag-p1{background:var(--gold);color:var(--paper)}
+.tag-p2{background:var(--paper-2);color:var(--muted);border-color:var(--rule-2)}
+.tag-st{background:var(--navy-bg);color:var(--navy);border-color:#C6D0DC}
+.tag-ok{background:var(--forest-bg);color:var(--forest);border-color:#CBD8BF}
+.tag-warn{background:var(--gold-bg);color:#6E4C0E;border-color:#E0CE9E}
+.tag-bad{background:var(--oxblood-bg);color:var(--oxblood-2);border-color:#E0BBB5}
+.tag-hi{background:var(--oxblood-bg);color:var(--oxblood-2);border-color:#E0BBB5}
+.tag-md{background:var(--gold-bg);color:#6E4C0E;border-color:#E0CE9E}
+.tag-lo{background:var(--paper-2);color:var(--muted);border-color:var(--rule-2)}
+.tag-strand{background:var(--forest-bg);color:var(--forest-2);border-color:#CBD8BF}
+
+/* ---- Overview ---- */
+.ov-grid{display:grid;grid-template-columns:230px 1fr;gap:22px}
+.ov-ring{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:var(--card-2);border:1px solid var(--rule-2);border-radius:var(--r);padding:20px}
+.ov-ring .cap{font-family:var(--serif);font-size:15px;color:var(--ink);font-weight:600;font-style:italic}
+.ov-ring .sub{font-size:12px;color:var(--muted)}
+.ov-right{display:flex;flex-direction:column;gap:16px;min-width:0}
+.ov-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule)}
+.ov-lists{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.ov-list{border:1px solid var(--rule);border-radius:8px;display:flex;flex-direction:column;min-height:120px}
+.ov-list .ol-head{padding:9px 12px;border-bottom:1px solid var(--rule);font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px}
+.ov-list .ol-body{overflow-y:auto;max-height:320px;padding:4px 6px}
+.ov-item{display:flex;align-items:center;gap:9px;padding:8px 9px;border-bottom:1px solid var(--rule-2);font-size:13px}
+.ov-item:last-child{border-bottom:none}
+.ov-item .tag{flex:none;text-transform:capitalize}
+.ov-item .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.ov-item .s{flex:none;font-size:11.5px;color:var(--muted)}
+.ov-item .d{flex:none;font-size:12px;color:var(--faint);font-weight:600}
+.ov-item .d.od{color:var(--oxblood)}
+.ov-item .d.today{color:#9A6B14}
+.ov-jump{flex:none;display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+  border:1px solid var(--rule-2);border-radius:4px;background:var(--card-2);cursor:pointer;
+  color:var(--oxblood);transition:all .14s ease;padding:0}
+.ov-jump:hover{background:var(--oxblood);color:var(--paper);border-color:var(--oxblood)}
+.ov-jump svg{width:13px;height:13px}
+@media(max-width:900px){.ov-lists{grid-template-columns:1fr}.ov-list .ol-body{max-height:220px}}
+.ov-card{background:var(--card);padding:14px 14px;display:flex;flex-direction:column;gap:2px;
+  border-right:1px solid var(--rule);transition:background .14s ease}
+.ov-card:last-child{border-right:none}
+.ov-card:hover{background:var(--card-2)}
+.ov-card .n{font-family:var(--serif);font-size:27px;font-weight:700;line-height:1;letter-spacing:-.02em}
+.ov-card .l{font-size:9.5px;color:var(--muted);font-weight:700;margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar-row{display:flex;align-items:center;gap:11px}
+.bar-row .bl{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);
+  width:108px;flex:none;text-align:right}
+.bar-row .bv{font-family:var(--serif);font-size:12px;color:var(--ink-2);width:40px;flex:none}
+.bar-row svg{flex:1}
+
+/* ---- Items ---- */
+.item{display:flex;gap:14px;align-items:flex-start;padding:15px 0;border-bottom:1px solid var(--rule)}
+.item:first-child{padding-top:2px}
+.item:last-child{border-bottom:none;padding-bottom:2px}
+.item .ibody{flex:1;min-width:0}
+.item .row1{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.item .title{font-family:var(--serif);font-weight:600;font-size:16px;word-break:break-word;letter-spacing:-.01em}
+.item .meta{font-size:12px;color:var(--muted);margin-top:5px;display:flex;gap:14px;flex-wrap:wrap;font-style:italic}
+.item .meta span{border-bottom:1px solid var(--rule-2)}
+.item .note{font-size:13px;color:var(--ink-2);background:var(--card-2);border-left:3px solid var(--rule-2);
+  padding:9px 13px;margin-top:9px;word-break:break-word;line-height:1.6;font-style:italic}
+.item .ops{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end;max-width:210px}
+.item.od{border-left:3px solid var(--oxblood);padding-left:13px;margin-left:-2px;
+  background:linear-gradient(90deg,var(--oxblood-bg),transparent 45%)}
+.prog{margin-top:8px;display:flex;align-items:center;gap:9px}
+.prog .pl{font-size:11px;color:var(--muted);font-style:italic;flex:none}
+.empty{text-align:center;color:var(--muted);padding:44px 12px;font-size:14px;line-height:1.6;
+  font-family:var(--serif);font-style:italic}
+.empty svg{display:block;margin:0 auto 14px;opacity:.5;color:var(--accent,var(--oxblood))}
+
+/* ---- Forms ---- */
+input,select,textarea{font-family:var(--sans);font-size:16px;color:var(--ink);background:var(--paper);
+  border:1px solid var(--rule-2);border-radius:var(--r);padding:11px 13px;width:100%;outline:none;transition:all .16s ease}
+input::placeholder,textarea::placeholder{color:var(--faint)}
+input:focus,select:focus,textarea:focus{border-color:var(--oxblood);box-shadow:0 0 0 3px rgba(138,42,42,.12)}
+textarea{min-height:78px;resize:vertical;line-height:1.55}
+.frm-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:10.5px;color:var(--muted);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+
+/* ---- Modal ---- */
+.mask{position:fixed;inset:0;background:rgba(33,28,21,.5);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.mask.on{display:flex;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--card);width:100%;max-width:560px;border:1px solid var(--rule-2);
+  border-top:4px solid var(--oxblood);border-radius:var(--r) var(--r) 0 0;max-height:90vh;overflow:auto;
+  padding:24px 22px calc(env(safe-area-inset-bottom) + 22px);box-shadow:0 -20px 60px -20px rgba(33,28,21,.4);
+  animation:slideup .24s cubic-bezier(.22,1,.36,1)}
+@keyframes slideup{from{transform:translateY(24px)}to{transform:translateY(0)}}
+.modal h3{font-family:var(--serif);font-size:22px;font-weight:700;font-style:italic;margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;letter-spacing:-.01em}
+.modal h3 svg{color:var(--oxblood)}
+.modal-ft{display:flex;gap:12px;margin-top:20px}
+.modal-ft .btn{flex:1;min-height:46px}
+@media(min-width:640px){.mask{align-items:center;padding:20px}
+  .modal{border-radius:var(--r);border-top:4px solid var(--oxblood)}}
+
+/* ---- Spinner / loading ---- */
+.spin{width:16px;height:16px;border:2px solid rgba(245,239,226,.4);border-top-color:var(--paper);
+  border-radius:50%;animation:rot .7s linear infinite;flex:none;display:inline-block}
+.spin.dark{border-color:rgba(33,28,21,.18);border-top-color:var(--oxblood);width:22px;height:22px}
+@keyframes rot{to{transform:rotate(360deg)}}
+.loading{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  padding:70px 20px;color:var(--muted);font-family:var(--serif);font-style:italic;font-size:14px}
+
+/* ---- Toast ---- */
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);
+  transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--paper);padding:12px 22px;
+  border-radius:var(--r);font-family:var(--serif);font-size:14px;font-style:italic;opacity:0;pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;z-index:200;max-width:90vw;text-align:center;
+  box-shadow:0 10px 30px -8px rgba(33,28,21,.5)}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--oxblood-2)}
+footer{text-align:center;color:var(--muted);font-family:var(--serif);font-style:italic;font-size:13px;
+  padding:16px 26px;letter-spacing:.01em;border-top:1px solid var(--rule);margin-top:8px}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .rail{position:static;height:auto;width:100%;padding:12px 18px 0;flex-direction:column}
+  .rail .shelf-lbl{display:none}
+  .spines{flex-direction:row;overflow-x:auto;gap:8px;flex:none;
+    padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .spine{min-height:44px;flex:1 0 auto;min-width:98px;border-left:1px solid var(--rule-2);
+    border-top:4px solid var(--sp,var(--oxblood));border-radius:4px 4px 2px 2px}
+  .spine span{writing-mode:horizontal-tb;transform:none;font-size:12px}
+  .account{flex-direction:row;align-items:center;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:10px}
+  .account .who{flex:1;min-width:140px}
+  main{padding:16px 18px 30px}
+  .ov-grid{grid-template-columns:1fr}
+  .frm-grid{grid-template-columns:1fr}
+  .hd .date{display:none}
+  .card-body{padding:15px 16px}
+  .card-head{padding:14px 16px 11px}
+  .ov-cards{grid-template-columns:repeat(2,1fr)}
+  .ov-card:nth-child(2n){border-right:none}
+  .ov-card:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+  .item .ops{max-width:none}
+  .page-head h1{font-size:24px}
+}
+@media(max-width:400px){
+  .ov-cards{grid-template-columns:1fr}
+  .ov-card{border-right:none;border-bottom:1px solid var(--rule)}
+  .ov-card:last-child{border-bottom:none}
+  .bar-row .bl{width:82px;font-size:9.5px}
+}
+
+/* ---- Library (Obsidian literature notes) ---- */
+.lib-search{max-width:240px;width:240px;flex:none}
+.lib-wrap{display:grid;grid-template-columns:320px 1fr;gap:0;border:1px solid var(--rule);
+  border-radius:var(--r);background:var(--card);overflow:hidden;min-height:62vh;box-shadow:0 1px 0 var(--rule)}
+.lib-list{border-right:1px solid var(--rule);max-height:calc(100vh - 210px);overflow:auto;background:var(--card-2)}
+.lib-file{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);
+  padding:11px 14px;cursor:pointer;min-height:44px;transition:background .14s ease;font-family:var(--sans)}
+.lib-file:hover{background:var(--card)}
+.lib-file.active{background:var(--card);border-left:3px solid var(--forest-2);padding-left:11px}
+.lib-file .fn{display:block;font-family:var(--serif);font-size:14px;color:var(--ink);word-break:break-word;line-height:1.35}
+.lib-file .fmeta{font-size:10.5px;color:var(--faint);margin-top:4px;display:flex;gap:10px;flex-wrap:wrap;font-style:italic}
+.lib-chip{display:inline-block;font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;background:var(--forest-bg);color:var(--forest-2);border:1px solid #CBD8BF;
+  border-radius:2px;padding:1px 5px;margin-bottom:4px}
+.lib-reader{padding:22px 26px;overflow:auto;max-height:calc(100vh - 210px);min-width:0}
+.lib-reader .back{display:none}
+.lib-ph{color:var(--muted);font-family:var(--serif);font-style:italic;padding:52px 20px;text-align:center;line-height:1.6}
+.lib-meta{border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:18px}
+.lib-meta h2{font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:-.01em;line-height:1.2;color:var(--ink)}
+.lib-meta .byline{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink-2);margin-top:8px}
+.lib-meta .jrow{font-size:12px;color:var(--muted);margin-top:6px;font-style:italic}
+.lib-meta .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.lib-meta .cite{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--gold-2);
+  background:var(--gold-bg);border:1px solid #E0CE9E;border-radius:2px;padding:2px 7px;display:inline-block;margin-top:12px}
+.md-body{font-family:var(--serif);font-size:15px;line-height:1.7;color:var(--ink-2)}
+.md-body p{margin:0 0 13px}
+.md-body h1,.md-body h2,.md-body h3{font-family:var(--serif);color:var(--ink);margin:20px 0 9px;line-height:1.25}
+.md-body .md-h1{font-size:22px}.md-body .md-h2{font-size:19px}.md-body .md-h3{font-size:16px}
+.md-body ul,.md-body ol{margin:0 0 13px 22px}
+.md-body li{margin:3px 0}
+.md-body blockquote{border-left:3px solid var(--rule-2);background:var(--card-2);padding:8px 14px;margin:0 0 13px;
+  font-style:italic;color:var(--muted)}
+.md-body pre{background:#211C15;color:#EDE5D3;padding:13px 15px;border-radius:var(--r);overflow:auto;margin:0 0 13px}
+.md-body pre code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:none;color:inherit;padding:0;border:none}
+.md-body code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:var(--paper-2);
+  border:1px solid var(--rule);border-radius:2px;padding:1px 5px}
+.md-body hr{border:none;border-top:1px solid var(--rule-2);margin:18px 0}
+.md-body a,.lib-lnk{color:var(--oxblood);text-decoration:underline;word-break:break-word}
+@media(max-width:900px){
+  .lib-wrap{grid-template-columns:1fr;min-height:0}
+  .lib-list{max-height:none;border-right:none}
+  .lib-reader{max-height:none;display:none;padding:18px 16px}
+  .lib-wrap.reading .lib-list{display:none}
+  .lib-wrap.reading .lib-reader{display:block}
+  .lib-reader .back{display:inline-flex;margin-bottom:14px}
+  .lib-search{max-width:none;width:100%;flex:1 1 100%;order:5}
+}
+/* ---- Library reading-status layer (eco_literature) ---- */
+.lib-chips{display:flex;gap:6px;flex-wrap:wrap;margin:-6px 0 16px}
+.lib-cf{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  border:1px solid var(--rule-2);border-radius:2px;padding:0 13px;min-height:40px;background:var(--card);
+  color:var(--muted);cursor:pointer;transition:all .14s ease}
+.lib-cf:hover{border-color:var(--ink);color:var(--ink)}
+.lib-cf.active{background:var(--forest-2);color:var(--paper);border-color:var(--forest-2)}
+.lib-badges{display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap}
+.lib-sb{font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  border-radius:2px;padding:1px 6px;border:1px solid transparent;line-height:1.5}
+.lib-sb.st-toread{background:var(--paper-2);color:var(--muted);border-color:var(--rule-2)}
+.lib-sb.st-reading{background:var(--navy-bg);color:var(--navy);border-color:#C6D0DC}
+.lib-sb.st-read{background:var(--forest-bg);color:var(--forest-2);border-color:#CBD8BF}
+.lib-dot{width:9px;height:9px;border-radius:50%;flex:none;display:inline-block}
+.lib-dot.imp-hi{background:var(--gold)}
+.lib-dot.imp-md{background:#D69A2E}
+.lib-dot.imp-lo{background:var(--faint)}
+.lib-status{background:var(--card-2);border:1px solid var(--rule-2);border-radius:var(--r);padding:14px 16px;margin-bottom:18px}
+.lib-status h3{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px}
+.lib-status .sgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lib-status .sfld{display:flex;flex-direction:column;gap:5px}
+.lib-status .sfld.sfull{grid-column:1/-1}
+.lib-status .sfld label{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.lib-status .srow{display:flex;gap:10px;align-items:center;margin-top:12px}
+@media(max-width:480px){.lib-status .sgrid{grid-template-columns:1fr}}
+/* ---- Obsidian renderer (markdown-it) styles ---- */
+.md-body .callout{border-left:4px solid var(--oxblood);background:var(--oxblood-bg);border-radius:8px;padding:12px 14px;margin:14px 0}
+.md-body .callout-title{display:flex;gap:8px;align-items:center;font-weight:700;margin-bottom:6px;color:var(--oxblood);font-family:var(--serif)}
+.md-body .callout-title-icon{display:flex;flex:none}
+.md-body .callout-title-icon svg{width:16px;height:16px}
+.md-body .callout-content>:first-child{margin-top:0}
+.md-body .callout-content>:last-child{margin-bottom:0}
+.md-body table{border-collapse:collapse;margin:14px 0;width:100%;font-size:13.5px}
+.md-body th,.md-body td{border:1px solid var(--rule);padding:6px 10px;text-align:left;vertical-align:top}
+.md-body th{background:var(--paper-2);font-weight:700}
+.md-body .task-list-item{list-style:none;margin-left:-20px}
+.md-body .task-list-item input{margin-right:8px;transform:translateY(1px)}
+.md-body .wl-link{color:var(--forest);text-decoration:none;border-bottom:1px dashed var(--forest);cursor:pointer;font-weight:500}
+.md-body .wl-link:hover{border-bottom-style:solid;background:var(--forest-bg)}
+.md-body blockquote{border-left:3px solid var(--gold);margin:12px 0;padding:2px 14px;color:var(--muted)}
+.md-body pre{background:var(--ink);color:var(--paper);border-radius:8px;padding:12px 14px;overflow:auto;font-size:12.5px;line-height:1.5}
+.md-body code{background:var(--paper-2);border-radius:4px;padding:1px 5px;font-size:12.5px}
+.md-body pre code{background:none;padding:0;font-size:12.5px}
+.md-body mark{background:var(--gold-bg);border-bottom:2px solid var(--gold);padding:0 2px;border-radius:2px}
+.md-body h1,.md-body h2,.md-body h3{margin:20px 0 8px;line-height:1.3}
+.md-body h1{font-size:22px}.md-body h2{font-size:18px}.md-body h3{font-size:15.5px}
+.md-body hr{border:none;border-top:1px solid var(--rule);margin:18px 0}
+.md-body img{max-width:100%;border-radius:6px}
+.md-body a{color:var(--forest)}
+/* ---- Projects (vault/projects + eco_projects status) ---- */
+.lib-file .ptags{font-size:10px;color:var(--faint);margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;font-style:italic}
+.proj-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);font-size:9px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;background:var(--gold-bg);color:var(--gold-2);border:1px solid #E0CE9E;
+  border-radius:2px;padding:2px 6px;line-height:1.4;white-space:nowrap;vertical-align:middle}
+.proj-chip svg{flex:none;opacity:.8}
+.proj-rel{background:var(--card-2);border:1px solid var(--rule-2);border-radius:var(--r);padding:14px 16px;margin-bottom:18px}
+.proj-rel>h3{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px}
+.proj-grp{margin-bottom:14px}
+.proj-grp:last-child{margin-bottom:0}
+.proj-grp .gh{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-2);margin-bottom:7px;
+  display:flex;align-items:center;gap:8px}
+.proj-grp .gh .gc{font-family:var(--sans);font-style:normal;font-size:9px;font-weight:700;color:var(--faint);
+  border:1px solid var(--rule-2);border-radius:2px;padding:1px 6px}
+.proj-rrow{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid var(--rule);border-radius:var(--r);
+  background:var(--card);margin-bottom:6px;text-decoration:none;color:inherit;transition:background .14s ease;min-height:42px}
+.proj-rrow:last-child{margin-bottom:0}
+.proj-rrow:hover{background:var(--card-2)}
+.proj-rrow .rt{flex:1;min-width:0;font-family:var(--serif);font-size:14px;color:var(--ink);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+</style>
+</head>
+<body>
+
+<!-- ============ SIGN-IN VIEW ============ -->
+<div id="authView">
+  <div class="auth-shell">
+    <div class="auth-brand">
+      <span class="badge"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a1 1 0 011-1h5v16H5a1 1 0 01-1-1z"/><path d="M14 4h5a1 1 0 011 1v14a1 1 0 01-1 1h-5z"/><path d="M10 4v16"/></svg></span>
+      <h1>Economics Desk</h1>
+      <div class="tag">A Research Workbench</div>
+      <div class="rule"></div>
+    </div>
+    <div class="auth-panel">
+      <h2 id="authHeading">Sign in</h2>
+      <div class="lede" id="authLede">Welcome back to your desk.</div>
+      <div class="auth-fields">
+        <div class="fld full"><label>Email</label>
+          <input id="authEmail" type="email" autocomplete="email" placeholder="you@institution.edu" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+        <div class="fld full"><label>Password</label>
+          <input id="authPass" type="password" autocomplete="current-password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+      </div>
+      <div class="auth-msg" id="authMsg"></div>
+      <button class="btn btn-primary btn-block" id="authBtn" onclick="authSubmit()" style="margin-top:20px">Sign in</button>
+      <div class="auth-toggle" id="authToggle"></div>
+    </div>
+    <div class="auth-foot">Your data lives securely in the cloud and is tied to your account.<br>The old local-only demo mode no longer exists.</div>
+  </div>
+</div>
+
+<!-- ============ APP VIEW ============ -->
+<div id="appView">
+  <header>
+    <div class="rule-top"><span id="volLabel">Vol. I</span><span>Established for rigorous inquiry</span><span>Cloud workbench</span></div>
+    <div class="hd">
+      <div class="logo">
+        <span class="badge"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a1 1 0 011-1h5v16H5a1 1 0 01-1-1z"/><path d="M14 4h5a1 1 0 011 1v14a1 1 0 01-1 1h-5z"/><path d="M10 4v16"/></svg></span>
+        <span class="name"><b>Economics Desk</b><span class="sub">A Research Workbench</span></span>
+      </div>
+      <span class="date" id="todayLabel"></span>
+    </div>
+  </header>
+
+  <nav class="rail">
+    <span class="shelf-lbl">The Shelf</span>
+    <div class="spines" id="spines"></div>
+    <div class="account">
+      <button class="acct-btn" onclick="toggleAcctMenu(event)" title="Account">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span id="acctEmail"></span>
+        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="acct-menu" id="acctMenu">
+        <button class="m-item" onclick="acctAction('export')">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 21h16"/></svg>Export backup</button>
+        <button class="m-item danger" onclick="acctAction('signout')">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M14 17l5-5-5-5"/><path d="M19 12H7"/></svg>Sign out</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="layout">
+    <main id="page"></main>
+  </div>
+
+  <footer>Economics Desk · Cloud research workbench · Data synced to your account</footer>
+</div>
+
+<!-- Record modal -->
+<div class="mask" id="mask" onclick="if(event.target===this)closeForm()">
+  <div class="modal">
+    <h3 id="modalTitle"></h3>
+    <div class="frm-grid" id="modalForm"></div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeForm()">Cancel</button>
+      <button class="btn btn-primary" id="modalSave" onclick="submitForm()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="renderer.bundle.js"></script>
+<script>
+(function(){
+'use strict';
+
+/* ============ Config ============ */
+var SUPA_URL='https://cklcfpodnrhktkhrqgkd.supabase.co';
+var SUPA_ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrbGNmcG9kbnJoa3RraHJxZ2tkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5MzQxNTEsImV4cCI6MjEwMTUxMDE1MX0.UHzUK1b6jxnovS1Gqoj8GNdRjGu1yXAoSKX5U1kRuXs';
+var AUTH_KEY='wb_eco_auth';
+var TABLE={questions:'eco_questions',literature:'eco_literature',data:'eco_data',analysis:'eco_analysis',writing:'eco_writing',submissions:'eco_submissions'};
+var MODS=['questions','literature','data','analysis','writing','submissions'];
+/* Projects: content = Storage notes (vault/projects); status layer = eco_projects */
+var PROJ_TABLE='eco_projects';
+var PROJ_STAGES=['Idea','Active','Revision','R&R','Published','Archived'];
+var PROJ_STAGE_TAG={'Idea':'tag-lo','Active':'tag-ok','Revision':'tag-p0','R&R':'tag-warn','Published':'tag-strand','Archived':'tag-lo'};
+/* related-work aggregation: display title key, page href, and group label per module table */
+var REL_TITLE={questions:'title',literature:'file_name',data:'name',analysis:'name',writing:'section',submissions:'journal'};
+var REL_HREF={questions:'#/questions',literature:'#/library',data:'#/data',analysis:'#/analysis',writing:'#/writing',submissions:'#/submissions'};
+var REL_LABEL={questions:'Questions',literature:'Library',data:'Data',analysis:'Analysis',writing:'Writing',submissions:'Submissions'};
+
+/* ---- Stage vocabularies ---- */
+var Q_STATUS=['Open','Developing','Answered'];
+var LIT_STATUS=['To Read','Reading','Read'];
+var IMP=['High','Medium','Low'];
+var PRI=['P0','P1','P2'];
+var DATA_STATUS=['Raw','Cleaning','Clean','Documented'];
+var ANA_STATUS=['Planned','Running','Robust','Failed'];
+var WRI_STATUS=['Outline','Drafting','Revising','Final'];
+var SUB_STATUS=['Preparing','Submitted','Under Review','R&R','Accepted','Rejected'];
+
+/* advance chains (terminal/failure states omitted from the tail) */
+var ADV={
+  questions:['Open','Developing','Answered'],
+  literature:['To Read','Reading','Read'],
+  data:['Raw','Cleaning','Clean','Documented'],
+  analysis:['Planned','Running','Robust'],
+  writing:['Outline','Drafting','Revising','Final'],
+  submissions:['Preparing','Submitted','Under Review','R&R','Accepted']
+};
+/* deadline-bearing modules that feed the docket, with their "done" states */
+var DOCKET={
+  data:{key:'name',doneStates:['Documented']},
+  analysis:{key:'name',doneStates:['Robust','Failed']},
+  writing:{key:'section',doneStates:['Final']},
+  submissions:{key:'journal',doneStates:['Accepted','Rejected']}
+};
+var MOD_NAME={questions:'Question',literature:'Reference',data:'Dataset',analysis:'Specification',writing:'Section',submissions:'Submission'};
+
+/* status pill class map */
+var STATUS_TAG={
+  'Open':'tag-lo','Developing':'tag-st','Answered':'tag-ok',
+  'To Read':'tag-lo','Reading':'tag-st','Read':'tag-ok',
+  'Raw':'tag-lo','Cleaning':'tag-st','Clean':'tag-warn','Documented':'tag-ok',
+  'Planned':'tag-lo','Running':'tag-st','Robust':'tag-ok','Failed':'tag-bad',
+  'Outline':'tag-lo','Drafting':'tag-st','Revising':'tag-warn','Final':'tag-ok',
+  'Preparing':'tag-lo','Submitted':'tag-st','Under Review':'tag-warn','R&R':'tag-warn','Accepted':'tag-ok','Rejected':'tag-bad'
+};
+
+/* page icon paths (inline SVG) */
+var ICON={
+  dashboard:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  questions:'<circle cx="12" cy="12" r="9"/><path d="M9.1 9a3 3 0 015.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  data:'<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>',
+  analysis:'<path d="M4 20V10M10 20V4M16 20v-7M20 20H2"/>',
+  writing:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
+  submissions:'<path d="M3 5h18v14H3z"/><path d="M3 7l9 6 9-6"/>',
+  library:'<path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>',
+  projects:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 12h18"/>'
+};
+var PAGES=[
+  {id:'dashboard',label:'Dashboard',color:'var(--ink)',folio:'§ 00',accent:'var(--oxblood)'},
+  {id:'questions',label:'Questions',color:'var(--oxblood)',folio:'§ 01',accent:'var(--oxblood)',hint:'Question bank & hypotheses',addLabel:'+ Question'},
+  {id:'library',label:'Library',color:'var(--forest-2)',folio:'§ 02',accent:'var(--forest-2)',hint:'Notes · reading status'},
+  {id:'projects',label:'Projects',color:'var(--gold-2)',folio:'§ 03',accent:'var(--gold-2)',hint:'vault/projects · status'},
+  {id:'data',label:'Data',color:'var(--navy)',folio:'§ 04',accent:'var(--navy)',hint:'Datasets & variables',addLabel:'+ Dataset'},
+  {id:'analysis',label:'Analysis',color:'var(--gold)',folio:'§ 05',accent:'var(--gold)',hint:'Specifications & results',addLabel:'+ Specification'},
+  {id:'writing',label:'Writing',color:'var(--oxblood-2)',folio:'§ 06',accent:'var(--oxblood-2)',hint:'Sections & draft progress',addLabel:'+ Section'},
+  {id:'submissions',label:'Submissions',color:'var(--forest-2)',folio:'§ 07',accent:'var(--forest-2)',hint:'Journals · status · timeline',addLabel:'+ Submission'}
+];
+function pageMeta(id){for(var i=0;i<PAGES.length;i++)if(PAGES[i].id===id)return PAGES[i];return null}
+
+/* ---- Form field configs (keys match table column names) ---- */
+var FIELDS={
+  questions:[
+    {k:'title',label:'Research question *',type:'text',ph:'e.g. Does the reform affect firm entry?'},
+    {k:'hypothesis',label:'Hypothesis',type:'text',ph:'e.g. Entry falls in tradable sectors only'},
+    {k:'priority',label:'Priority',type:'select',opts:PRI},
+    {k:'importance',label:'Importance',type:'select',opts:IMP},
+    {k:'status',label:'Status',type:'select',opts:Q_STATUS},
+    {k:'note',label:'Notes',type:'textarea',ph:'Mechanism / identification idea / open issues…'}
+  ],
+  data:[
+    {k:'name',label:'Dataset name *',type:'text',ph:'e.g. LEHD LODES 2010–2020'},
+    {k:'source',label:'Source / provider',type:'text',ph:'e.g. Public archive / your institution'},
+    {k:'vars',label:'Key variables',type:'text',ph:'e.g. employment, wages, firm age, NAICS'},
+    {k:'status',label:'Cleaning status',type:'select',opts:DATA_STATUS},
+    {k:'deadline',label:'Target date',type:'date'},
+    {k:'note',label:'Notes',type:'textarea',ph:'Coverage / merge keys / caveats…'}
+  ],
+  analysis:[
+    {k:'name',label:'Specification / result *',type:'text',ph:'e.g. Baseline event-study, entry rate'},
+    {k:'method',label:'Method',type:'text',ph:'e.g. DiD, event study'},
+    {k:'status',label:'Status',type:'select',opts:ANA_STATUS},
+    {k:'deadline',label:'Target date',type:'date'},
+    {k:'result',label:'Main result',type:'textarea',ph:'Point estimate, SE, sign, magnitude…'}
+  ],
+  writing:[
+    {k:'section',label:'Section *',type:'text',ph:'e.g. Introduction / Identification / Results'},
+    {k:'status',label:'Draft status',type:'select',opts:WRI_STATUS},
+    {k:'progress',label:'Progress %',type:'number',ph:'0–100'},
+    {k:'words',label:'Word count',type:'number',ph:'e.g. 1800'},
+    {k:'deadline',label:'Target date',type:'date'},
+    {k:'note',label:'Notes',type:'textarea',ph:'Outstanding paragraphs / feedback to address…'}
+  ],
+  submissions:[
+    {k:'journal',label:'Target journal *',type:'text',ph:'e.g. Leading journal in your field'},
+    {k:'status',label:'Status',type:'select',opts:SUB_STATUS},
+    {k:'deadline',label:'Next deadline',type:'date'},
+    {k:'reviewer',label:'Reviewer comments',type:'textarea',ph:'Summary of referee reports / editor asks…'},
+    {k:'note',label:'Notes',type:'textarea',ph:'Timeline, co-author, cover-letter status…'}
+  ]
+};
+var TITLE_KEY={questions:'title',literature:'title',data:'name',analysis:'name',writing:'section',submissions:'journal'};
+
+/* ============ State ============ */
+var auth=null;                 // {access_token,refresh_token,expires_at,email}
+var db={questions:[],literature:[],data:[],analysis:[],writing:[],submissions:[]};
+var loaded=false;              // cloud data fetched at least once this session
+var editType=null,editId=null;
+var authModeSignup=false,authBusy=false;
+/* Library state (cached in module scope; cleared only on manual refresh) */
+var libFiles=null,libCache=new Map(),libSelected=null,libSearch='',libReaderMode=false;
+/* Reading-status layer: eco_literature rows keyed by file_name (md name without ".md") */
+var libStatus=new Map(),libStatusFilter='All',libSaving=false;
+/* Projects page state (mirrors Library) */
+var projFiles=null,projCache=new Map(),projFm=new Map(),projSelected=null,projSearch='',projReaderMode=false,projSaving=false,projOpenNote=null,projFormMode=false,projLastShown=[];
+/* eco_projects cache shared module-wide (selects + list chips); null = not fetched */
+var projRows=null,projByName=new Map(),projById=new Map();
+/* related-work cache for the open project: {} keyed by module, projRelatedFor = project id */
+var projRelated=null,projRelatedFor=null;
+/* ---- Prefetch + persistent read-cache state ---- */
+var prefetchStarted=false;          // login prefetch fired once this session
+var projRowsFresh=false;            // eco_projects confirmed from network (cache alone = stale)
+var libListBusy=false,projListBusy=false;   // in-flight guards so bg + page don't double-fetch
+var libLruOrder=[];                 // recently-read library note names (LRU tail = newest)
+var LIB_LRU_MAX=20;                 // bounded reader cache persisted to localStorage
+
+/* ============ Helpers ============ */
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function todayStr(){return fmt(new Date())}
+function addDays(s,n){var d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return fmt(d)}
+function clampPct(v){v=parseInt(v,10);if(isNaN(v))return 0;return Math.max(0,Math.min(100,v))}
+function find(type,id){var a=db[type]||[];for(var i=0;i<a.length;i++)if(String(a[i].id)===String(id))return a[i];return null}
+function svg(inner,sz){sz=sz||18;return '<svg viewBox="0 0 24 24" width="'+sz+'" height="'+sz+'" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+inner+'</svg>'}
+function toast(msg,isErr){var el=$('toast');el.textContent=msg;el.className=isErr?'on err':'on';clearTimeout(toast._t);toast._t=setTimeout(function(){el.className=''},2600)}
+
+/* ============ Session persistence ============ */
+function loadSession(){try{var s=localStorage.getItem(AUTH_KEY);if(s)auth=JSON.parse(s)}catch(e){auth=null}}
+function saveSession(){try{localStorage.setItem(AUTH_KEY,JSON.stringify(auth))}catch(e){}}
+function clearStoredSession(){auth=null;try{localStorage.removeItem(AUTH_KEY)}catch(e){}}
+
+/* ============ Persistent read-cache (localStorage) ============
+   Cloud stays the source of truth; this is a warm-start layer only.
+   Keys: wb_eco_cache_<uid>_<slot>. Namespaced by user id so accounts never
+   share data. All writes are try/catch + deferred (quota-safe, non-blocking). */
+var CACHE_PREF='wb_eco_cache_';
+function cacheUid(){
+  if(auth&&auth.id)return auth.id;
+  try{                                                    /* fallback: JWT sub for pre-existing sessions */
+    var t=auth&&auth.access_token;if(!t)return 'anon';
+    var p=JSON.parse(atob(t.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+    return p.sub||'anon';
+  }catch(e){return 'anon'}
+}
+function cacheKey(slot){return CACHE_PREF+cacheUid()+'_'+slot}
+function cacheGet(slot){try{var s=localStorage.getItem(cacheKey(slot));return s?JSON.parse(s):null}catch(e){return null}}
+function cacheSet(slot,val){try{localStorage.setItem(cacheKey(slot),JSON.stringify(val))}catch(e){/* quota — degrade to in-memory silently */}}
+function cacheSetAsync(slot,val){setTimeout(function(){cacheSet(slot,val)},0)}   /* never block the UI thread */
+function clearUserCache(){
+  try{
+    var pre=CACHE_PREF+cacheUid()+'_',rm=[],i;
+    for(i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(pre)===0)rm.push(k)}
+    for(i=0;i<rm.length;i++)localStorage.removeItem(rm[i]);
+  }catch(e){}
+}
+/* Warm the in-memory caches from disk before the first render (instant pages). */
+function hydrateFromCache(){
+  var l=cacheGet('libList');
+  if(l&&l.length){libFiles=l;libFiles.forEach(function(f,i){f._i=i})}
+  var ls=cacheGet('litStatus');
+  if(ls){libStatus=new Map();ls.forEach(function(x){if(x&&x.file_name!=null)libStatus.set(String(x.file_name),x)})}
+  var ps=cacheGet('projStatus');
+  if(ps){projRows=ps;rebuildProjIndex()}                 /* projRowsFresh stays false → loadAll refreshes */
+  var lru=cacheGet('libNotesLRU');
+  if(lru&&lru.order&&lru.notes){lru.order.forEach(function(n){if(lru.notes[n]!=null)libCache.set(n,lru.notes[n])});libLruOrder=lru.order.slice(-LIB_LRU_MAX)}
+}
+/* Reader LRU: keep raw text for the ~20 most-recently-read library notes. */
+function persistLibLru(){
+  var notes={};libLruOrder.forEach(function(n){if(libCache.has(n))notes[n]=libCache.get(n)});
+  cacheSetAsync('libNotesLRU',{order:libLruOrder.slice(),notes:notes});
+}
+function libCachePut(name,text){
+  libCache.set(name,text);
+  var idx=libLruOrder.indexOf(name);if(idx>=0)libLruOrder.splice(idx,1);
+  libLruOrder.push(name);
+  while(libLruOrder.length>LIB_LRU_MAX){var ev=libLruOrder.shift();/* keep libCache entry for session, drop from persistence only */}
+  persistLibLru();
+}
+function persistProjNotes(){
+  var o={};projCache.forEach(function(v,k){o[k]=v});cacheSetAsync('projNotes',o);
+}
+
+/* ============ Auth REST ============ */
+function jsonHeaders(){return {'apikey':SUPA_ANON,'Content-Type':'application/json'}}
+function doSignup(email,pass){
+  return fetch(SUPA_URL+'/auth/v1/signup',{method:'POST',headers:jsonHeaders(),body:JSON.stringify({email:email,password:pass})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,body:j}})});
+}
+function doPasswordLogin(email,pass){
+  return fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:jsonHeaders(),body:JSON.stringify({email:email,password:pass})})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,status:r.status,body:j}})});
+}
+function storeSession(b,email){
+  auth={access_token:b.access_token,refresh_token:b.refresh_token,
+    expires_at:Date.now()+(b.expires_in?b.expires_in*1000:3600000),
+    email:(b.user&&b.user.email)||email,
+    id:(b.user&&b.user.id)||(auth&&auth.id)||null};   /* user id for cache namespacing */
+  saveSession();
+}
+/* returns Promise<boolean> — true if refreshed */
+function refreshToken(){
+  if(!auth||!auth.refresh_token)return Promise.resolve(false);
+  return fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:jsonHeaders(),body:JSON.stringify({refresh_token:auth.refresh_token})})
+    .then(function(r){if(!r.ok)return false;return r.json().then(function(b){if(!b.access_token)return false;storeSession(b,auth.email);return true})})
+    .catch(function(){return false});
+}
+
+/* ============ Data REST ============ */
+function dataHeaders(extra){
+  var h={'apikey':SUPA_ANON,'Authorization':'Bearer '+(auth?auth.access_token:''),'Content-Type':'application/json'};
+  if(extra)for(var k in extra)h[k]=extra[k];
+  return h;
+}
+/* core fetch with one-shot 401 refresh+retry */
+function apiFetch(url,opts,retried){
+  opts=opts||{};
+  var final={method:opts.method||'GET',headers:dataHeaders(opts._extra)};
+  if(opts.body)final.body=opts.body;
+  return fetch(url,final).then(function(r){
+    if(r.status===401&&!retried){
+      return refreshToken().then(function(ok){
+        if(ok)return apiFetch(url,opts,true);
+        forceSignIn();throw new Error('Session expired — please sign in again.');
+      });
+    }
+    return r;
+  });
+}
+function apiGet(table){
+  return apiFetch(SUPA_URL+'/rest/v1/'+table+'?order=created_at.asc',{method:'GET'})
+    .then(function(r){if(!r.ok)throw new Error('Load failed ('+r.status+')');return r.json()});
+}
+function apiInsert(table,row){
+  return apiFetch(SUPA_URL+'/rest/v1/'+table,{method:'POST',_extra:{'Prefer':'return=representation'},body:JSON.stringify(row)})
+    .then(function(r){if(!r.ok)throw new Error('Save failed ('+r.status+')');return r.json().then(function(a){return a[0]})});
+}
+function apiUpdate(table,id,patch){
+  return apiFetch(SUPA_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',_extra:{'Prefer':'return=representation'},body:JSON.stringify(patch)})
+    .then(function(r){if(!r.ok)throw new Error('Update failed ('+r.status+')');return r.json().then(function(a){return a[0]})});
+}
+function apiDelete(table,id){
+  return apiFetch(SUPA_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id),{method:'DELETE'})
+    .then(function(r){if(!r.ok)throw new Error('Delete failed ('+r.status+')');return true});
+}
+
+/* ============ View switching ============ */
+function showAuthView(){$('authView').classList.add('on');$('appView').classList.remove('on')}
+function showAppView(){$('authView').classList.remove('on');$('appView').classList.add('on')}
+function forceSignIn(){
+  clearStoredSession();loaded=false;prefetchStarted=false;
+  db={questions:[],literature:[],data:[],analysis:[],writing:[],submissions:[]};
+  /* wipe in-memory Library/Projects caches so a different account can't see the last user's data */
+  libFiles=null;libCache=new Map();libSelected=null;libSearch='';libReaderMode=false;libLruOrder=[];
+  libStatus=new Map();libStatusFilter='All';libListBusy=false;
+  projFiles=null;projCache=new Map();projFm=new Map();projSelected=null;projSearch='';projReaderMode=false;projListBusy=false;
+  projRows=null;projRowsFresh=false;projByName=new Map();projById=new Map();projRelated=null;projRelatedFor=null;
+  resetAuthForm();showAuthView();
+}
+
+/* ============ Sign-in form ============ */
+function resetAuthForm(){authBusy=false;setAuthMsg('','');$('authPass').value='';setAuthBusy(false)}
+function setAuthMode(signup){
+  authModeSignup=signup;setAuthMsg('','');
+  $('authHeading').textContent=signup?'Create account':'Sign in';
+  $('authLede').textContent=signup?'Set up your research desk in the cloud.':'Welcome back to your desk.';
+  $('authBtn').textContent=signup?'Create account':'Sign in';
+  $('authPass').setAttribute('autocomplete',signup?'new-password':'current-password');
+  $('authToggle').innerHTML=signup
+    ?'Already have an account? <a onclick="setAuthMode(false)">Sign in</a>'
+    :'No account yet? <a onclick="setAuthMode(true)">Create one</a>';
+}
+function setAuthMsg(msg,kind){var el=$('authMsg');el.textContent=msg;el.className='auth-msg'+(kind?(' '+kind):'')}
+function setAuthBusy(b){
+  authBusy=b;var btn=$('authBtn');btn.disabled=b;
+  btn.innerHTML=b?('<span class="spin"></span>'+(authModeSignup?'Creating…':'Signing in…')):(authModeSignup?'Create account':'Sign in');
+}
+function authSubmit(){
+  if(authBusy)return;
+  var email=($('authEmail').value||'').trim(),pass=$('authPass').value||'';
+  if(!email||email.indexOf('@')<0){setAuthMsg('Enter a valid email address.','error');return}
+  if(pass.length<6){setAuthMsg('Password must be at least 6 characters.','error');return}
+  setAuthMsg('','');setAuthBusy(true);
+  if(authModeSignup){
+    doSignup(email,pass).then(function(res){
+      if(!res.ok){setAuthBusy(false);setAuthMsg((res.body&&(res.body.msg||res.body.error_description||res.body.error))||'Sign-up failed.','error');return}
+      if(res.body&&res.body.access_token){storeSession(res.body,email);setAuthBusy(false);enterApp()}
+      else{setAuthBusy(false);setAuthMode(false);setAuthMsg('Check your inbox to confirm your email, then sign in.','notice')}
+    }).catch(function(){setAuthBusy(false);setAuthMsg('Network error — please try again.','error')});
+  }else{
+    doPasswordLogin(email,pass).then(function(res){
+      if(!res.ok||!res.body.access_token){setAuthBusy(false);setAuthMsg((res.body&&(res.body.error_description||res.body.msg||res.body.error))||'Invalid email or password.','error');return}
+      storeSession(res.body,email);setAuthBusy(false);enterApp();
+    }).catch(function(){setAuthBusy(false);setAuthMsg('Network error — please try again.','error')});
+  }
+}
+window.authSubmit=authSubmit;window.setAuthMode=setAuthMode;
+
+/* ============ Sign out ============ */
+function signOut(){
+  clearUserCache();                 /* drop this account's persistent cache (uid known while auth still set) */
+  if(auth&&auth.access_token){
+    fetch(SUPA_URL+'/auth/v1/logout',{method:'POST',headers:dataHeaders()}).catch(function(){});
+  }
+  forceSignIn();toast('Signed out');
+}
+window.signOut=signOut;
+
+/* ---- Account dropdown menu ---- */
+function toggleAcctMenu(ev){if(ev&&ev.stopPropagation)ev.stopPropagation();var m=$('acctMenu');if(m)m.classList.toggle('open')}
+function closeAcctMenu(){var m=$('acctMenu');if(m)m.classList.remove('open')}
+function acctAction(a){closeAcctMenu();if(a==='export')exportBackup();else if(a==='signout')signOut()}
+document.addEventListener('click',function(ev){var t=ev&&ev.target;if(!t||!t.closest||!t.closest('.account'))closeAcctMenu()});
+document.addEventListener('keydown',function(ev){if(ev&&ev.key==='Escape')closeAcctMenu()});
+window.toggleAcctMenu=toggleAcctMenu;window.acctAction=acctAction;
+
+/* ============ Enter app: load cloud data ============ */
+function enterApp(){
+  showAppView();
+  $('acctEmail').textContent=(auth&&auth.email)||'Signed in';
+  hydrateFromCache();               /* warm-start Library/Projects from disk before first paint */
+  buildSpines();todayLabel();
+  if(!location.hash)location.hash='#/dashboard';
+  route();
+}
+function loadAll(){
+  return Promise.all(MODS.map(function(m){return apiGet(TABLE[m]).then(function(rows){db[m]=rows||[]})}))
+    .then(function(){return ensureProjects()})   /* project cache ready before first render (never rejects) */
+    .then(function(){loaded=true});
+}
+/* ---- Background prefetch after the landing page paints (non-blocking, silent) ----
+   Warms the Library file list + reading status and the Projects list + note bodies so
+   those pages open instantly. eco_projects status is already fetched by loadAll. */
+function startPrefetch(){
+  if(prefetchStarted)return;prefetchStarted=true;
+  libFetchList(true);                          /* library list + eco_literature status, cached, no toast */
+}
+
+/* ============ Nav / router ============ */
+function buildSpines(){
+  $('spines').innerHTML=PAGES.map(function(p){
+    return '<div class="spine" style="--sp:'+p.color+'" data-page="'+p.id+'"><span>'+p.label+'</span></div>';
+  }).join('');
+  var els=$('spines').querySelectorAll('.spine');
+  for(var i=0;i<els.length;i++){(function(el){el.onclick=function(){location.hash='#/'+el.getAttribute('data-page')}})(els[i])}
+}
+function currentPage(){
+  var h=(location.hash||'').replace(/^#\//,'').split('?')[0];   /* strip ?project= highlight query */
+  return pageMeta(h)?h:'dashboard';
+}
+function route(){
+  var pid=currentPage();
+  var els=$('spines').querySelectorAll('.spine');
+  for(var i=0;i<els.length;i++)els[i].classList.toggle('active',els[i].getAttribute('data-page')===pid);
+  if(!loaded){
+    $('page').innerHTML='<div class="loading"><span class="spin dark"></span>Retrieving your workbench from the cloud…</div>';
+    loadAll().then(function(){renderPage(pid);startPrefetch()}).catch(function(e){
+      $('page').innerHTML='<div class="loading">Could not load your data.<br>'+esc((e&&e.message)||'Error')+'<br><button class="btn btn-primary btn-sm" style="margin-top:10px" onclick="location.reload()">Retry</button></div>';
+    });
+  }else{renderPage(pid)}
+}
+window.addEventListener('hashchange',function(){if($('appView').classList.contains('on'))route()});
+
+/* ============ Page rendering ============ */
+function renderPage(pid){
+  if(pid==='dashboard'){renderDashboard();return}
+  if(pid==='library'){renderLibrary();return}
+  if(pid==='projects'){renderProjects();return}
+  renderModulePage(pid);
+}
+function rerender(){renderPage(currentPage())}
+
+/* ---- Dashboard ---- */
+function collectToday(){
+  var t=todayStr(),items=[];
+  Object.keys(DOCKET).forEach(function(mod){
+    var cfg=DOCKET[mod];
+    (db[mod]||[]).forEach(function(x){
+      if(!x.deadline||cfg.doneStates.indexOf(x.status)>=0)return;
+      var base={type:mod,id:x.id,title:x[cfg.key],status:x.status};
+      if(x.deadline<t){base.kind='overdue';base.sub=MOD_NAME[mod]+' · overdue since '+x.deadline+' · '+x.status;items.push(base)}
+      else if(x.deadline===t){base.kind='due';base.sub=MOD_NAME[mod]+' · due today · '+x.status;items.push(base)}
+      else if(x.deadline<=addDays(t,3)){base.kind='soon';base.sub=MOD_NAME[mod]+' · due '+x.deadline+' · '+x.status;items.push(base)}
+    });
+  });
+  var ord={overdue:0,due:1,soon:2};
+  items.sort(function(a,b){return ord[a.kind]-ord[b.kind]});
+  return items;
+}
+function renderDashboard(){
+  var items=collectToday();
+  var od=items.filter(function(i){return i.kind==='overdue'}).length;
+  var du=items.filter(function(i){return i.kind==='due'}).length;
+  var so=items.filter(function(i){return i.kind==='soon'}).length;
+
+  var docket;
+  if(!items.length){
+    docket='<div class="empty">'+svg('<circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/>',46)+'The docket is clear — nothing overdue or due within three days.</div>';
+  }else{
+    docket=items.map(function(i){
+      var label=i.kind==='overdue'?'Overdue':(i.kind==='due'?'Due today':'Soon');
+      var tagc=i.kind==='overdue'?'tag-od':i.kind==='due'?'tag-due':'tag-soon';
+      var adv='<button class="btn btn-sm btn-primary" onclick="advance(\''+i.type+'\',\''+i.id+'\')">Advance</button>';
+      var resched=i.kind==='overdue'?'<button class="btn btn-sm btn-ghost" onclick="rescheduleToday(\''+i.type+'\',\''+i.id+'\')">Reschedule</button>':'';
+      return '<div class="focus-item '+(i.kind==='overdue'?'overdue':'')+'">'
+        +'<span class="tag '+tagc+'">'+label+'</span>'
+        +'<div class="txt"><div class="t">'+esc(i.title||'(untitled)')+'</div><div class="s">'+esc(i.sub)+'</div></div>'
+        +'<div class="fops">'+adv+resched+'</div></div>';
+    }).join('');
+  }
+
+  var html=''
+    +'<div class="page-head" style="--accent:var(--oxblood)"><span class="folio">§ 00</span>'
+    +'<h1>'+svg(ICON.dashboard,22)+'Dashboard</h1><span class="hint">'+todayStr()+'</span></div>'
+
+    +'<section class="card focus-card">'
+    +'<div class="card-head"><span class="folio">§ 00</span><h2>'+svg(ICON.dashboard)+'Today’s Docket</h2>'
+    +'<span class="sp"></span><span class="hint">'+od+' overdue · '+du+' due today · '+so+' within 3 days</span></div>'
+    +'<div class="card-body">'+docket+'</div>'
+    +'<div class="foot-note"><span class="dag">†</span><span>Overdue items sit at the top in red — advance a stage or reschedule to today with one tap. Computed live from the cloud.</span></div>'
+    +'</section>'
+
+    +renderOverview(od);
+
+  $('page').innerHTML=html;
+}
+function renderOverview(){
+  var C={questions:'#8A2A2A',literature:'#3E5B3A',data:'#2C3E5A',analysis:'#9A6B14',writing:'#6E1F1F',submissions:'#2F4A2C',projects:'#9A6B14'};
+  var dbq=db.questions||[],dbl=db.literature||[],dbd=db.data||[],dba=db.analysis||[],dbw=db.writing||[],dbs=db.submissions||[];
+  var todo=dbq.filter(function(q){return q.status!=='Answered'}).length
+    +dbl.filter(function(x){return x.status&&x.status!=='Read'}).length
+    +dbd.filter(function(d){return d.status!=='Documented'}).length
+    +dba.filter(function(a){return a.status!=='Robust'&&a.status!=='Failed'}).length
+    +dbw.filter(function(w){return (w.progress==null?0:w.progress)<100}).length
+    +dbs.filter(function(s){return s.status!=='Accepted'&&s.status!=='Rejected'}).length;
+  var dlAll=[].concat(dbd,dba,dbw,dbs,projRows||[]);
+  var deadlines=dlAll.filter(function(x){return x&&x.deadline}).length;
+
+  var today=new Date();today.setHours(0,0,0,0);
+  function dState(d){var t=new Date(d+'T00:00:00');if(t<today)return 'od';if(t.getTime()===today.getTime())return 'today';return ''}
+  function esc2(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+  var todoItems=[];
+  dbq.forEach(function(q){if(q.status!=='Answered')todoItems.push({mod:'questions',title:q.title,sub:(q.status||'')+' · '+(q.priority||''),pid:q.project_id})});
+  dbl.forEach(function(x){if(x.status&&x.status!=='Read')todoItems.push({mod:'literature',title:x.title||x.file_name,sub:x.status,pid:x.project_id})});
+  dbd.forEach(function(d){if(d.status!=='Documented')todoItems.push({mod:'data',title:d.name,sub:d.status,pid:d.project_id})});
+  dba.forEach(function(a){if(a.status!=='Robust'&&a.status!=='Failed')todoItems.push({mod:'analysis',title:a.name,sub:a.status,pid:a.project_id})});
+  dbw.forEach(function(w){if((w.progress==null?0:w.progress)<100)todoItems.push({mod:'writing',title:w.section,sub:(w.progress==null?0:w.progress)+'%',pid:w.project_id})});
+  dbs.forEach(function(s){if(s.status!=='Accepted'&&s.status!=='Rejected')todoItems.push({mod:'submissions',title:s.journal,sub:s.status,pid:s.project_id})});
+
+  var dlItems=[];
+  dbd.forEach(function(d){if(d.deadline)dlItems.push({mod:'data',title:d.name,date:d.deadline,st:dState(d.deadline),pid:d.project_id})});
+  dba.forEach(function(a){if(a.deadline)dlItems.push({mod:'analysis',title:a.name,date:a.deadline,st:dState(a.deadline),pid:a.project_id})});
+  dbw.forEach(function(w){if(w.deadline)dlItems.push({mod:'writing',title:w.section,date:w.deadline,st:dState(w.deadline),pid:w.project_id})});
+  dbs.forEach(function(s){if(s.deadline)dlItems.push({mod:'submissions',title:s.journal,date:s.deadline,st:dState(s.deadline),pid:s.project_id})});
+  (projRows||[]).forEach(function(p){if(p.deadline)dlItems.push({mod:'projects',title:p.name,date:p.deadline,st:dState(p.deadline)})});
+  dlItems.sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:0});
+
+  function tag(m){return '<span class="tag" style="background:'+(C[m]||'#8A2A2A')+';color:#fff">'+esc2(m)+'</span>'}
+  function jump(pid,title){
+    var row=pid!=null?(projById.get(String(pid))||null):null;
+    if(!row||!row.name)return '';
+    return '<button class="ov-jump" title="Open project" onclick="openProj(\''+esc2(String(row.name))+"')" +'">'+svg('<path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 21h16"/>',13)+'</button>';
+  }
+  var todoHtml=todoItems.map(function(i){return '<div class="ov-item">'+tag(i.mod)+'<span class="t">'+esc2(i.title)+'</span><span class="s">'+esc2(i.sub)+'</span>'+jump(i.pid,i.title)+'</div>'}).join('')||'<div class="ov-item"><span class="t" style="color:var(--faint)">Nothing to do — all clear.</span></div>';
+  var dlHtml=dlItems.map(function(i){return '<div class="ov-item">'+tag(i.mod)+'<span class="t">'+esc2(i.title)+'</span><span class="d '+(i.st||'')+'">'+esc2(i.date)+'</span>'+jump(i.pid,i.title)+'</div>'}).join('')||'<div class="ov-item"><span class="t" style="color:var(--faint)">No deadlines set.</span></div>';
+
+  return '<section class="card">'
+    +'<div class="card-head"><span class="folio">§ 0i</span><h2>'+svg('<path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/>')+'Overview</h2>'
+    +'<span class="sp"></span><span class="hint">'+todo+' to-do · '+deadlines+' deadlines</span></div>'
+    +'<div class="card-body">'
+    +'<div class="ov-cards" style="grid-template-columns:repeat(2,1fr)">'
+    +'<div class="ov-card"><span class="n" style="color:#8A2A2A">'+todo+'</span><span class="l">To-do items</span></div>'
+    +'<div class="ov-card"><span class="n" style="color:#2C3E5A">'+deadlines+'</span><span class="l">Deadlines</span></div>'
+    +'</div>'
+    +'<div class="ov-lists">'
+    +'<div class="ov-list"><div class="ol-head">'+svg('<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',13)+'To-do list</div><div class="ol-body">'+todoHtml+'</div></div>'
+    +'<div class="ov-list"><div class="ol-head">'+svg('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',13)+'Deadlines</div><div class="ol-body">'+dlHtml+'</div></div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="foot-note"><span class="dag">‡</span><span>Scroll each list to browse all items. Red dates are overdue, gold = today. Computed live from the cloud.</span></div>'
+    +'</section>';
+}
+function stageShare(mod,stages,statusKey){
+  var a=db[mod]||[];if(!a.length)return 0;var s=0,maxI=stages.length-1;
+  a.forEach(function(x){var i=stages.indexOf(x[statusKey||'status']);if(i<0)i=0;s+=i/maxI});
+  return Math.round(s/a.length*100);
+}
+function modulePct(mod){
+  if(mod==='questions')return stageShare('questions',Q_STATUS);
+  if(mod==='literature')return stageShare('literature',LIT_STATUS);
+  if(mod==='data')return stageShare('data',DATA_STATUS);
+  if(mod==='analysis'){var a=db.analysis||[];if(!a.length)return 0;var s=0;a.forEach(function(x){var i=['Planned','Running','Robust'].indexOf(x.status);if(i<0)i=0;s+=i/2});return Math.round(s/a.length*100)}
+  if(mod==='writing'){var w=db.writing||[];if(!w.length)return 0;var s=0;w.forEach(function(x){s+=clampPct(x.progress)});return Math.round(s/w.length)}
+  if(mod==='submissions'){var b=db.submissions||[];if(!b.length)return 0;var st=['Preparing','Submitted','Under Review','R&R','Accepted'],s=0;b.forEach(function(x){var i=st.indexOf(x.status);if(i<0)i=0;s+=i/4});return Math.round(s/b.length*100)}
+  return 0;
+}
+
+/* ---- Module list pages ---- */
+function deadlineBadge(dl,doneStates,status){
+  if(!dl)return '';
+  if(doneStates&&doneStates.indexOf(status)>=0)return '<span class="tag tag-ok">'+esc(dl)+'</span>';
+  var t=todayStr();
+  if(dl<t)return '<span class="tag tag-od">Overdue '+esc(dl)+'</span>';
+  if(dl===t)return '<span class="tag tag-due">Due today</span>';
+  if(dl<=addDays(t,3))return '<span class="tag tag-soon">Due '+esc(dl)+'</span>';
+  return '<span class="tag tag-lo">'+esc(dl)+'</span>';
+}
+function statusPill(st){return '<span class="tag '+(STATUS_TAG[st]||'tag-lo')+'">'+esc(st||'—')+'</span>'}
+function impPill(v){var c=v==='High'?'tag-hi':v==='Medium'?'tag-md':'tag-lo';return v?'<span class="tag '+c+'">'+esc(v)+'</span>':''}
+function priPill(v){var c=v==='P0'?'tag-p0':v==='P1'?'tag-p1':'tag-p2';return v?'<span class="tag '+c+'">'+esc(v)+'</span>':''}
+function canAdvance(type,status){var c=ADV[type];return !!(c&&c.indexOf(status)>=0&&c.indexOf(status)<c.length-1)}
+
+function itemOps(type,id,adv){
+  var ops='';
+  if(adv)ops+='<button class="btn btn-icon" title="Advance stage" onclick="advance(\''+type+'\',\''+id+'\')">'+svg('<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',15)+'</button>';
+  ops+='<button class="btn btn-icon" title="Edit" onclick="openForm(\''+type+'\',\''+id+'\')">'+svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',15)+'</button>';
+  ops+='<button class="btn btn-icon del" title="Delete" onclick="delItem(\''+type+'\',\''+id+'\')">'+svg('<path d="M3 6h18"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>',15)+'</button>';
+  return '<div class="ops">'+ops+'</div>';
+}
+function renderRow(type,x){
+  var t=todayStr(),dl=x.deadline;
+  var isOverdue=dl&&dl<t&&!(DOCKET[type]&&DOCKET[type].doneStates.indexOf(x.status)>=0);
+  var title,meta='',pills='',note='',prog='';
+  if(type==='questions'){
+    title=x.title;pills=priPill(x.priority)+statusPill(x.status)+impPill(x.importance);
+    if(x.hypothesis)meta='<div class="meta"><span>H: '+esc(x.hypothesis)+'</span></div>';
+    if(x.note)note='<div class="note">'+esc(x.note)+'</div>';
+  }else if(type==='data'){
+    title=x.name;pills=statusPill(x.status)+deadlineBadge(dl,DOCKET.data.doneStates,x.status);
+    var dm=[];if(x.source)dm.push('<span>'+esc(x.source)+'</span>');if(x.vars)dm.push('<span>'+esc(x.vars)+'</span>');
+    if(dm.length)meta='<div class="meta">'+dm.join('')+'</div>';
+    if(x.note)note='<div class="note">'+esc(x.note)+'</div>';
+  }else if(type==='analysis'){
+    title=x.name;pills=statusPill(x.status)+deadlineBadge(dl,DOCKET.analysis.doneStates,x.status);
+    if(x.method)meta='<div class="meta"><span>'+esc(x.method)+'</span></div>';
+    if(x.result)note='<div class="note">'+esc(x.result)+'</div>';
+  }else if(type==='writing'){
+    title=x.section;pills=statusPill(x.status)+deadlineBadge(dl,DOCKET.writing.doneStates,x.status);
+    var p=clampPct(x.progress);
+    if(x.words)meta='<div class="meta"><span>'+esc(x.words)+' words</span></div>';
+    prog='<div class="prog"><span class="pl">'+p+'%</span>'
+      +'<svg viewBox="0 0 200 8" width="100%" height="8" preserveAspectRatio="none" style="flex:1"><rect width="200" height="8" rx="2" fill="#E3D9C4"/><rect width="'+(200*p/100)+'" height="8" rx="2" fill="#6E1F1F"/></svg></div>';
+    if(x.note)note='<div class="note">'+esc(x.note)+'</div>';
+  }else if(type==='submissions'){
+    title=x.journal;pills=statusPill(x.status)+deadlineBadge(dl,DOCKET.submissions.doneStates,x.status);
+    if(x.reviewer)note+='<div class="note"><b style="font-style:normal">Reviewers:</b> '+esc(x.reviewer)+'</div>';
+    if(x.note)note+='<div class="note">'+esc(x.note)+'</div>';
+  }
+  pills+=projChip(x.project_id);   /* show the assigned project, resolved from the cached map */
+  return '<div class="item'+(isOverdue?' od':'')+'"><div class="ibody">'
+    +'<div class="row1"><span class="title">'+esc(title||'(untitled)')+'</span>'+pills+'</div>'
+    +meta+prog+note+'</div>'
+    +itemOps(type,x.id,canAdvance(type,x.status))+'</div>';
+}
+function renderModulePage(pid){
+  var m=pageMeta(pid),rows=db[pid]||[];
+  var body;
+  if(!rows.length){
+    var msgs={questions:'No questions yet — add your first research question.',
+      literature:'No references yet — add the first paper for your review.',
+      data:'No datasets yet — register your first dataset.',
+      analysis:'No specifications yet — plan your first empirical analysis.',
+      writing:'No sections yet — outline your first draft section.',
+      submissions:'No submissions yet — add your first target journal.'};
+    body='<div class="empty" style="--accent:'+m.accent+'">'+svg(ICON[pid],46)+esc(msgs[pid])+'</div>';
+  }else{
+    body=rows.map(function(x){return renderRow(pid,x)}).join('');
+  }
+  var html=''
+    +'<div class="page-head" style="--accent:'+m.accent+'"><span class="folio">'+m.folio+'</span>'
+    +'<h1>'+svg(ICON[pid],22)+m.label+'</h1><span class="hint">'+esc(m.hint||'')+'</span><span class="sp"></span>'
+    +'<button class="btn btn-primary btn-sm" onclick="openForm(\''+pid+'\')">'+esc(m.addLabel||'+ Add')+'</button></div>'
+    +'<section class="card" style="--accent:'+m.accent+'"><div class="card-body">'+body+'</div></section>';
+  $('page').innerHTML=html;
+}
+
+/* ============ Library (Obsidian literature notes via Supabase Storage) ============ */
+var LIB_BUCKET='obsidian-vault',LIB_PREFIX='vault/literature';
+/* list uses the shared apiFetch → inherits the app's 401 refresh / forceSignIn flow */
+function libApiList(){
+  return apiFetch(SUPA_URL+'/storage/v1/object/list/'+LIB_BUCKET,
+    {method:'POST',body:JSON.stringify({prefix:LIB_PREFIX,limit:1000,sortBy:{column:'name',order:'asc'}})})
+    .then(function(r){if(!r.ok)throw new Error('List failed ('+r.status+')');return r.json()});
+}
+function libApiRead(name){
+  var enc=name.split('/').map(encodeURIComponent).join('/');   /* encode each segment, keep slashes */
+  return apiFetch(SUPA_URL+'/storage/v1/object/'+LIB_BUCKET+'/'+LIB_PREFIX+'/'+enc,{method:'GET'})
+    .then(function(r){if(!r.ok)throw new Error('Read failed ('+r.status+')');return r.text()});
+}
+function libParts(name){var p=name.lastIndexOf('/');var b=p>=0?name.slice(p+1):name;
+  return {folder:p>=0?name.slice(0,p):'',name:b.replace(/\.md$/i,'')}}
+function libSize(b){b=+b||0;if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(1)+' MB'}
+
+/* ---- YAML-ish frontmatter parser (title/authors/year/journal/tags/citekey…) ---- */
+function libStripQ(s){return String(s).replace(/^['"]|['"]$/g,'').trim()}
+function parseNote(raw){
+  raw=String(raw==null?'':raw).replace(/^﻿/,'');
+  var fm={},body=raw,m=/^---[ \t]*\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?/.exec(raw);
+  if(m){
+    body=raw.slice(m[0].length);var cur=null;
+    m[1].split(/\r?\n/).forEach(function(line){
+      var li=/^[ \t]*-[ \t]+(.*)$/.exec(line);                 /* YAML block-list item under last key */
+      if(li&&cur){if(!Array.isArray(fm[cur]))fm[cur]=[];fm[cur].push(libStripQ(li[1]));return}
+      var kv=/^([A-Za-z0-9_ -]+?)[ \t]*:[ \t]*(.*)$/.exec(line);
+      if(kv){var k=kv[1].trim().toLowerCase(),v=kv[2].trim();cur=k;
+        if(v==='')fm[k]='';
+        else if(/^\[.*\]$/.test(v))fm[k]=v.slice(1,-1).split(',').map(libStripQ).filter(Boolean);  /* inline [a, b] */
+        else fm[k]=libStripQ(v);}
+    });
+  }
+  return {fm:fm,body:body};
+}
+
+/* ---- Mini markdown renderer: hand-written, zero deps, escapes HTML first (no XSS) ---- */
+function libUrl(u){return /^(https?:|mailto:)/i.test(u)?u:'#'}   /* block javascript: etc. */
+function mdInline(s){
+  s=esc(s);                                                     /* escape BEFORE any markup is injected */
+  var parts=s.split(/(`[^`]+`)/);                      /* odd chunks are inline-code spans (already escaped) */
+  for(var i=0;i<parts.length;i++){
+    if(i%2===1){parts[i]='<code>'+parts[i].slice(1,-1)+'</code>';continue}
+    var x=parts[i];
+    x=x.replace(/!\[([^\]]*)\]\(([^)\s]+)[^)]*\)/g,function(m,a,u){   /* images -> clickable link (not uploaded) */
+      return '<a class="lib-lnk" href="'+libUrl(u)+'" target="_blank" rel="noopener">'+(a||'image')+'</a>'});
+    x=x.replace(/\[([^\]]*)\]\(([^)\s]+)[^)]*\)/g,function(m,t,u){
+      return '<a class="lib-lnk" href="'+libUrl(u)+'" target="_blank" rel="noopener">'+(t||u)+'</a>'});
+    x=x.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+    x=x.replace(/\*([^*]+)\*/g,'<em>$1</em>');
+    parts[i]=x;
+  }
+  return parts.join('');
+}
+function mdBody(src){
+  if(window.ObsidianRenderer&&window.ObsidianRenderer.renderObsidian){try{return window.ObsidianRenderer.renderObsidian(String(src==null?'':src))}catch(e){}}
+  var lines=String(src==null?'':src).replace(/\r\n/g,'\n').split('\n'),out=[],para=[],list=null,i;
+  function fp(){if(para.length){out.push('<p>'+para.map(mdInline).join('<br>')+'</p>');para=[]}}
+  function fl(){if(list){out.push('<'+list.tag+'>'+list.items.map(function(t){return '<li>'+mdInline(t)+'</li>'}).join('')+'</'+list.tag+'>');list=null}}
+  for(i=0;i<lines.length;i++){
+    var ln=lines[i];
+    if(/^```/.test(ln)){fp();fl();var buf=[];i++;while(i<lines.length&&!/^```/.test(lines[i])){buf.push(lines[i]);i++}
+      out.push('<pre><code>'+esc(buf.join('\n'))+'</code></pre>');continue}
+    if(/^\s*$/.test(ln)){fp();fl();continue}
+    if(/^\s*---+\s*$/.test(ln)){fp();fl();out.push('<hr>');continue}
+    var h=/^(#{1,3})\s+(.*)$/.exec(ln);
+    if(h){fp();fl();var lv=h[1].length;out.push('<h'+lv+' class="md-h'+lv+'">'+mdInline(h[2])+'</h'+lv+'>');continue}
+    if(/^\s*>\s?/.test(ln)){fp();fl();out.push('<blockquote>'+mdInline(ln.replace(/^\s*>\s?/,''))+'</blockquote>');continue}
+    var ul=/^\s*[-*]\s+(.*)$/.exec(ln),ol=/^\s*\d+\.\s+(.*)$/.exec(ln);
+    if(ul){fp();if(!list||list.tag!=='ul'){fl();list={tag:'ul',items:[]}}list.items.push(ul[1]);continue}
+    if(ol){fp();if(!list||list.tag!=='ol'){fl();list={tag:'ol',items:[]}}list.items.push(ol[1]);continue}
+    para.push(ln);
+  }
+  fp();fl();return out.join('\n');
+}
+
+/* ---- Library page rendering ---- */
+function renderLibrary(){
+  var m=pageMeta('library');
+  $('page').innerHTML=''
+    +'<div class="page-head" style="--accent:'+m.accent+'"><span class="folio">'+m.folio+'</span>'
+    +'<h1>'+svg(ICON.library,22)+'Library</h1><span class="hint">vault/literature</span><span class="sp"></span>'
+    +'<input id="libSearch" class="lib-search" type="search" placeholder="Filter by name…" value="'+esc(libSearch)+'" oninput="libFilter(this.value)">'
+    +'<button class="btn btn-ghost btn-sm" onclick="libRefresh()" title="Reload the file list">'
+    +svg('<path d="M3 12a9 9 0 019-9 9 9 0 016.7 3M21 12a9 9 0 01-9 9 9 9 0 01-6.7-3"/><path d="M21 3v5h-5M3 21v-5h5"/>',15)+'Refresh</button></div>'
+    +'<div class="lib-chips" id="libChips"></div>'
+    +'<div class="lib-wrap'+(libReaderMode?' reading':'')+'" id="libWrap">'
+    +'<div class="lib-list" id="libListEl"></div><div class="lib-reader" id="libReaderEl"></div></div>';
+  renderLibChips();
+  if(libFiles===null){$('libListEl').innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>';libFetchList(false)}
+  else{renderLibList();libFetchList(true)}   /* instant paint from cache, then silent background refresh */
+  renderLibReaderPane();
+}
+/* Reading-status rows: file_name is the join key back to the vault note names */
+function libFetchStatus(){
+  return apiFetch(SUPA_URL+'/rest/v1/eco_literature?select=id,file_name,status,importance,note,project_id',{method:'GET'})
+    .then(function(r){if(!r.ok)throw new Error('Status load failed ('+r.status+')');return r.json()})
+    .then(function(rows){
+      libStatus=new Map();
+      (rows||[]).forEach(function(x){if(x&&x.file_name!=null)libStatus.set(String(x.file_name),x)});
+      cacheSetAsync('litStatus',rows||[]);
+    }).catch(function(){/* badges simply stay hidden if the status layer is unreachable */});
+}
+/* bg=true → silent background refresh (paint stays on cached list; no toast/spinner) */
+function libFetchList(bg){
+  if(bg&&libListBusy)return;                                    /* dedupe prefetch vs page open */
+  libListBusy=true;
+  /* status + file list load in parallel; each re-renders the list as it lands */
+  libFetchStatus().then(function(){renderLibList();renderLibReaderPane()});
+  libApiList().then(function(arr){
+    libListBusy=false;
+    var files=(arr||[]).filter(function(f){return f&&f.name&&/\.md$/i.test(f.name)&&f.id!=null});
+    files.forEach(function(f,i){f._i=i});
+    libFiles=files;cacheSetAsync('libList',files);             /* refresh in-memory + persistent cache */
+    renderLibList();
+  }).catch(function(e){
+    libListBusy=false;
+    if(bg)return;                                               /* keep cached list on a silent failure */
+    libFiles=[];var el=$('libListEl');
+    if(el)el.innerHTML='<div class="lib-ph">Could not load the library.<br>'+esc((e&&e.message)||'Error')+'</div>';
+    toast((e&&e.message)||'Library load failed',true);
+  });
+}
+/* ---- Status/importance badges + filter chips ---- */
+var LIB_SB={'To Read':'st-toread','Reading':'st-reading','Read':'st-read'};
+var LIB_IMP={'High':'imp-hi','Medium':'imp-md','Low':'imp-lo'};
+function libStatusBadge(fileName){
+  var s=libStatus.get(fileName);if(!s)return '';
+  var out='';
+  if(s.status)out+='<span class="lib-sb '+(LIB_SB[s.status]||'st-toread')+'">'+esc(s.status)+'</span>';
+  if(s.importance)out+='<span class="lib-dot '+(LIB_IMP[s.importance]||'imp-lo')+'" title="'+esc(s.importance)+' importance"></span>';
+  out+=projChip(s.project_id);
+  return out?'<span class="lib-badges">'+out+'</span>':'';
+}
+function renderLibChips(){
+  var el=$('libChips');if(!el)return;
+  el.innerHTML=['All','To Read','Reading','Read'].map(function(o){
+    return '<button class="lib-cf'+(o===libStatusFilter?' active':'')+'" onclick="libSetFilter(\''+o+'\')">'+esc(o)+'</button>';
+  }).join('');
+}
+function libSetFilter(v){libStatusFilter=v;renderLibChips();renderLibList()}
+window.libSetFilter=libSetFilter;
+function renderLibList(){
+  var el=$('libListEl');if(!el)return;
+  if(libFiles===null)return;                                     /* still loading — keep the spinner */
+  var files=libFiles,q=(libSearch||'').toLowerCase(),sf=libStatusFilter;
+  if(!files.length){el.innerHTML='<div class="lib-ph">No notes found in vault/literature.</div>';return}
+  var shown=files.filter(function(f){
+    if(q&&f.name.toLowerCase().indexOf(q)<0)return false;         /* name search */
+    if(sf!=='All'){var s=libStatus.get(libParts(f.name).name);if(!s||s.status!==sf)return false}  /* status chip */
+    return true;
+  });
+  if(!shown.length){el.innerHTML='<div class="lib-ph">No notes match that filter.</div>';return}
+  el.innerHTML=shown.map(function(f){
+    var pt=libParts(f.name),meta=[];
+    if(f.metadata&&f.metadata.size)meta.push('<span>'+libSize(f.metadata.size)+'</span>');
+    if(f.updated_at)meta.push('<span>'+esc(String(f.updated_at).slice(0,10))+'</span>');
+    return '<button class="lib-file'+(f.name===libSelected?' active':'')+'" onclick="libSelect('+f._i+')">'
+      +(pt.folder?'<span class="lib-chip">'+esc(pt.folder)+'</span>':'')
+      +'<span class="fn">'+esc(pt.name)+'</span>'
+      +(meta.length?'<div class="fmeta">'+meta.join('')+'</div>':'')
+      +libStatusBadge(pt.name)+'</button>';
+  }).join('');
+}
+function libSelect(i){
+  var f=(libFiles||[])[i];if(!f)return;
+  libSelected=f.name;libReaderMode=true;
+  var w=$('libWrap');if(w)w.classList.add('reading');
+  renderLibList();                                              /* refresh active highlight */
+  if(libCache.has(f.name)){renderLibReader(f.name,libCache.get(f.name));libBgReread(f.name);return}   /* instant from LRU, refresh quietly */
+  var el=$('libReaderEl');if(el)el.innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>';
+  libApiRead(f.name).then(function(t){libCachePut(f.name,t);if(libSelected===f.name)renderLibReader(f.name,t)})
+    .catch(function(e){var r=$('libReaderEl');
+      if(r)r.innerHTML='<div class="lib-ph">Could not open this note.<br>'+esc((e&&e.message)||'Error')+'</div>';
+      toast((e&&e.message)||'Read failed',true)});
+}
+function renderLibReaderPane(){
+  var el=$('libReaderEl');if(!el)return;
+  if(!libSelected){el.innerHTML='<div class="lib-ph">Select a note from the list to read it here.</div>';return}
+  if(libCache.has(libSelected)){renderLibReader(libSelected,libCache.get(libSelected));libBgReread(libSelected);return}
+  el.innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>';
+  var want=libSelected;
+  libApiRead(want).then(function(t){libCachePut(want,t);if(libSelected===want)renderLibReader(want,t)})
+    .catch(function(){var r=$('libReaderEl');if(r)r.innerHTML='<div class="lib-ph">Could not open this note.</div>'});
+}
+/* silent re-read of a cached note; re-render only if the content actually changed */
+function libBgReread(name){
+  libApiRead(name).then(function(t){var old=libCache.get(name);libCachePut(name,t);if(libSelected===name&&t!==old)renderLibReader(name,t)}).catch(function(){});
+}
+function renderLibReader(name,raw){
+  var el=$('libReaderEl');if(!el)return;
+  var pd=parseNote(raw),fm=pd.fm,pt=libParts(name);
+  var title=fm.title||pt.name;
+  var authors=fm.authors||fm.author||'';if(Array.isArray(authors))authors=authors.join(', ');
+  var tags=fm.tags;if(typeof tags==='string')tags=tags.split(',').map(function(s){return s.trim()}).filter(Boolean);
+  if(!Array.isArray(tags))tags=[];
+  var jr=[];if(fm.year)jr.push(esc(String(fm.year)));if(fm.journal)jr.push('<em>'+esc(String(fm.journal))+'</em>');
+  el.innerHTML='<div class="lib-meta">'
+    +'<button class="btn btn-ghost btn-sm back" onclick="libBack()">'+svg('<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',15)+'Back to list</button>'
+    +'<h2>'+esc(String(title))+'</h2>'
+    +(authors?'<div class="byline">'+esc(String(authors))+'</div>':'')
+    +(jr.length?'<div class="jrow">'+jr.join(' · ')+'</div>':'')
+    +(tags.length?'<div class="tags">'+tags.map(function(t){return '<span class="tag tag-strand">'+esc(t)+'</span>'}).join('')+'</div>':'')
+    +(fm.citekey?'<div><span class="cite">'+esc(String(fm.citekey))+'</span></div>':'')
+    +'</div>'
+    +libStatusPanel(pt.name)
+    +'<div class="md-body">'+mdBody(pd.body)+'</div>';
+  el.scrollTop=0;
+}
+/* ---- Reading-status panel: prefilled from the map, PATCH by id or POST by file_name ---- */
+function libOpts(list,sel){return list.map(function(o){return '<option'+(o===sel?' selected':'')+'>'+esc(o)+'</option>'}).join('')}
+function libStatusPanel(fileName){
+  var s=libStatus.get(fileName)||{};
+  return '<div class="lib-status">'
+    +'<h3>Reading status</h3>'
+    +'<div class="sgrid">'
+    +'<div class="sfld"><label>Status</label><select id="lsStatus">'+libOpts(LIT_STATUS,s.status||'To Read')+'</select></div>'
+    +'<div class="sfld"><label>Importance</label><select id="lsImp">'+libOpts(IMP,s.importance||'Medium')+'</select></div>'
+    +'<div class="sfld sfull"><label>Note</label><input id="lsNote" type="text" value="'+esc(s.note||'')+'" placeholder="One-line reading note…"></div>'
+    +'<div class="sfld sfull"><label>Project</label>'+projSelectHtml('lsProject',s.project_id)+'</div>'
+    +'</div>'
+    +'<div class="srow"><button class="btn btn-primary btn-sm" id="lsSave" onclick="libSaveStatus()">Save</button></div>'
+    +'</div>';
+}
+function libSaveStatus(){
+  if(libSaving||!libSelected)return;
+  var fn=libParts(libSelected).name;
+  var status=$('lsStatus')?$('lsStatus').value:'',imp=$('lsImp')?$('lsImp').value:'';
+  var note=$('lsNote')?($('lsNote').value||'').trim():'';
+  var proj=$('lsProject')?($('lsProject').value||null):null;if(proj==='')proj=null;
+  var existing=libStatus.get(fn);
+  var btn=$('lsSave');libSaving=true;
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving'}
+  var done=function(){libSaving=false;if(btn){btn.disabled=false;btn.textContent='Save'}};
+  var p=(existing&&existing.id)
+    ? apiUpdate(TABLE.literature,existing.id,{status:status,importance:imp,note:note,project_id:proj})           /* PATCH by id */
+    : apiInsert(TABLE.literature,{file_name:fn,status:status,importance:imp,note:note,project_id:proj});           /* POST file_name */
+  p.then(function(row){
+    var merged=row||{id:existing&&existing.id,file_name:fn,status:status,importance:imp,note:note,project_id:proj};
+    if(merged.file_name==null)merged.file_name=fn;
+    libStatus.set(fn,merged);
+    cacheSetAsync('litStatus',Array.from(libStatus.values()));   /* keep read-cache consistent */
+    done();renderLibList();toast('Status saved');
+  }).catch(function(e){done();toast((e&&e.message)||'Save failed',true)});   /* local map untouched on error */
+}
+window.libSaveStatus=libSaveStatus;
+function libFilter(v){libSearch=v;renderLibList()}
+function libBack(){libReaderMode=false;var w=$('libWrap');if(w)w.classList.remove('reading')}
+function libRefresh(){libFiles=null;renderLibrary();toast('Reloading library…')}
+window.libSelect=libSelect;window.libFilter=libFilter;window.libBack=libBack;window.libRefresh=libRefresh;
+
+/* ============ Project cache (eco_projects, shared module-wide) ============ */
+function rebuildProjIndex(){
+  projByName=new Map();projById=new Map();
+  (projRows||[]).forEach(function(p){
+    if(p&&p.name!=null)projByName.set(String(p.name),p);
+    if(p&&p.id!=null)projById.set(String(p.id),p);
+  });
+}
+function upsertProj(row){
+  if(!row)return;projRows=projRows||[];
+  var i=-1;
+  for(var k=0;k<projRows.length;k++){
+    if((row.id!=null&&String(projRows[k].id)===String(row.id))||(row.name!=null&&String(projRows[k].name)===String(row.name))){i=k;break}
+  }
+  if(i>=0)projRows[i]=Object.assign(projRows[i],row);else projRows.push(row);
+  rebuildProjIndex();cacheSetAsync('projStatus',projRows);   /* keep read-cache consistent with edits */
+}
+/* fetch once; refresh with force=true. Never rejects — on failure selects fall back to "— None —" + toast. */
+function ensureProjects(force){
+  if(projRows&&projRowsFresh&&!force)return Promise.resolve(projRows);   /* stale hydrated cache still refreshes */
+  return apiFetch(SUPA_URL+'/rest/v1/eco_projects?select=id,name,stage,priority,deadline,note&order=name.asc',{method:'GET'})
+    .then(function(r){if(!r.ok)throw new Error('Projects load failed ('+r.status+')');return r.json()})
+    .then(function(rows){projRows=rows||[];projRowsFresh=true;rebuildProjIndex();cacheSetAsync('projStatus',projRows);return projRows})
+    .catch(function(e){if(force||projRows===null)toast((e&&e.message)||'Could not load projects',true);return projRows||[]});
+}
+/* select options: "— None —" + one per cached project (value = project_id) */
+function projSelectHtml(id,selected){
+  var opts='<option value="">— None —</option>';
+  (projRows||[]).forEach(function(p){
+    opts+='<option value="'+esc(String(p.id))+'"'+(String(selected)===String(p.id)?' selected':'')+'>'+esc(p.name)+'</option>';
+  });
+  return '<select id="'+esc(id)+'">'+opts+'</select>';
+}
+/* small chip resolving a project_id to its name (module lists + library badges) */
+function projChip(pid){
+  if(pid==null||pid==='')return '';
+  var p=projById.get(String(pid));if(!p)return '';
+  return '<span class="proj-chip">'+svg('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/>',10)+esc(p.name)+'</span>';
+}
+
+/* ============ Projects page (fully web-managed — eco_projects only, no Storage) ============ */
+function renderProjects(){
+  var qs=(location.hash||'').split('?')[1]||'',nm=null;
+  qs.split('&').forEach(function(p){var kv=p.split('=');if(kv[0]==='note'){try{nm=decodeURIComponent(kv[1]||'')}catch(e){nm=kv[1]||null}}});
+  projOpenNote=nm||null;
+  var m=pageMeta('projects');
+  $('page').innerHTML=''
+    +'<div class="page-head" style="--accent:'+m.accent+'"><span class="folio">'+m.folio+'</span>'
+    +'<h1>'+svg(ICON.projects,22)+'Projects</h1><span class="hint">web-managed</span><span class="sp"></span>'
+    +'<input id="projSearch" class="lib-search" type="search" placeholder="Filter by name…" value="'+esc(projSearch)+'" oninput="projFilter(this.value)">'
+    +'<button class="btn btn-ghost btn-sm" onclick="projNewForm()" title="New project">'+svg('<path d="M12 5v14M5 12h14"/>',15)+'New project</button>'
+    +'<button class="btn btn-ghost btn-sm" onclick="projRefresh()" title="Reload projects">'
+    +svg('<path d="M3 12a9 9 0 019-9 9 9 0 016.7 3M21 12a9 9 0 01-9 9 9 9 0 01-6.7-3"/><path d="M21 3v5h-5M3 21v-5h5"/>',15)+'Refresh</button></div>'
+    +'<div class="lib-wrap'+(projReaderMode?' reading':'')+'" id="projWrap">'
+    +'<div class="lib-list" id="projListEl"></div><div class="lib-reader" id="projReaderEl"></div></div>';
+  if(projRows===null)$('projListEl').innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>';
+  else renderProjList();
+  renderProjReaderPane();
+  /* rows come from loadAll/ensureProjects; refresh in background then apply any ?note= jump */
+  ensureProjects().then(function(){renderProjList();renderProjReaderPane();projApplyOpenNote()});
+}
+/* ?note=name from the dashboard jump → select the matching project once rows are present */
+function projApplyOpenNote(){
+  if(!projOpenNote)return;
+  var want=String(projOpenNote);projOpenNote=null;
+  if(projByName.has(want))projSelect(want);
+}
+/* sort: deadline asc (dated first), then name asc */
+function projSortedRows(){
+  var rows=(projRows||[]).slice();
+  rows.sort(function(a,b){
+    var ad=a.deadline||'',bd=b.deadline||'';
+    if(ad&&bd){if(ad!==bd)return ad<bd?-1:1;}
+    else if(ad)return -1;
+    else if(bd)return 1;
+    var an=String(a.name||'').toLowerCase(),bn=String(b.name||'').toLowerCase();
+    return an<bn?-1:an>bn?1:0;
+  });
+  return rows;
+}
+/* deadline state (same logic as the dashboard Overview): overdue / today / upcoming */
+function projDState(d){
+  if(!d)return '';
+  var today=new Date();today.setHours(0,0,0,0);
+  var t=new Date(d+'T00:00:00');
+  if(t<today)return 'od';
+  if(t.getTime()===today.getTime())return 'today';
+  return '';
+}
+function renderProjList(){
+  var el=$('projListEl');if(!el)return;
+  if(projRows===null)return;
+  var rows=projSortedRows(),q=(projSearch||'').toLowerCase();
+  if(!rows.length){el.innerHTML='<div class="lib-ph">No projects yet. Use “New project” to add one.</div>';return}
+  var shown=rows.filter(function(p){return !q||String(p.name||'').toLowerCase().indexOf(q)>=0});
+  projLastShown=shown;
+  if(!shown.length){el.innerHTML='<div class="lib-ph">No projects match that filter.</div>';return}
+  el.innerHTML=shown.map(function(p,idx){
+    var badges='';
+    if(p.stage)badges+='<span class="tag '+(PROJ_STAGE_TAG[p.stage]||'tag-lo')+'">'+esc(p.stage)+'</span>';
+    if(p.priority)badges+=priPill(p.priority);
+    if(p.deadline){var st=projDState(p.deadline),dc=st==='od'?'tag-p0':st==='today'?'tag-warn':'tag-lo';badges+='<span class="tag '+dc+'">'+esc(p.deadline)+'</span>';}
+    var snip='';
+    if(p.note){var n=String(p.note);snip='<div class="ptags"><span>'+esc(n.length>90?n.slice(0,90)+'…':n)+'</span></div>';}
+    return '<button class="lib-file'+(String(p.name)===projSelected?' active':'')+'" onclick="projPick('+idx+')">'
+      +'<span class="fn">'+esc(String(p.name))+'</span>'
+      +(badges?'<div class="lib-badges">'+badges+'</div>':'')
+      +snip
+      +'</button>';
+  }).join('');
+}
+/* list click → resolve visible-row index to its name (avoids quoting names into onclick) */
+function projPick(idx){var p=projLastShown[idx];if(p)projSelect(p.name)}
+function projSelect(name){
+  var s=projByName.get(String(name));if(!s)return;
+  projSelected=String(name);projReaderMode=true;
+  var w=$('projWrap');if(w)w.classList.add('reading');
+  renderProjList();
+  renderProjReader(projSelected);
+}
+function renderProjReaderPane(){
+  var el=$('projReaderEl');if(!el)return;
+  if(!projSelected||!projByName.has(String(projSelected))){el.innerHTML='<div class="lib-ph">Select a project from the list to view and edit it here.</div>';return}
+  renderProjReader(projSelected);
+}
+/* reader = web-managed detail + edit form (no markdown) + Related work aggregation */
+function renderProjReader(name){
+  var el=$('projReaderEl');if(!el)return;
+  var s=projByName.get(String(name));
+  if(!s){el.innerHTML='<div class="lib-ph">Project not found.</div>';return}
+  var stage=s.stage||'Idea';
+  var badge='<span class="tag '+(PROJ_STAGE_TAG[stage]||'tag-lo')+'">'+esc(stage)+'</span>';
+  el.innerHTML='<div class="lib-meta">'
+    +'<button class="btn btn-ghost btn-sm back" onclick="projBack()">'+svg('<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',15)+'Back to list</button>'
+    +'<h2>'+esc(String(s.name))+'</h2>'
+    +'<div class="tags">'+badge+priPill(s.priority)+'</div>'
+    +'</div>'
+    +projEditPanel(s)
+    +'<div class="proj-rel"><h3>Related work</h3><div id="projRelEl">'+projRelatedInit(s.name)+'</div></div>';
+  el.scrollTop=0;
+  if(s.id&&!(projRelated&&projRelatedFor===s.id&&typeof projRelated==='object'))projLoadRelated(s.id);
+}
+/* ---- Editable detail panel: PATCH by id (Save) / DELETE by id (Delete) ---- */
+function projEditPanel(s){
+  return '<div class="lib-status">'
+    +'<h3>Project detail</h3>'
+    +'<div class="sgrid">'
+    +'<div class="sfld"><label>Stage</label><select id="psStage">'+libOpts(PROJ_STAGES,s.stage||'Idea')+'</select></div>'
+    +'<div class="sfld"><label>Priority</label><select id="psPri">'+libOpts(PRI,s.priority||'P1')+'</select></div>'
+    +'<div class="sfld"><label>Deadline</label><input id="psDeadline" type="date" value="'+esc(s.deadline||'')+'"></div>'
+    +'<div class="sfld sfull"><label>Note</label><textarea id="psNote" placeholder="Project notes…">'+esc(s.note||'')+'</textarea></div>'
+    +'</div>'
+    +'<div class="srow"><button class="btn btn-primary btn-sm" id="psSave" onclick="projSaveDetail()">Save</button>'
+    +'<button class="btn btn-ghost btn-sm" id="psDel" onclick="projDelete()" style="color:var(--oxblood)">Delete project</button></div>'
+    +'</div>';
+}
+function projSaveDetail(){
+  if(projSaving||!projSelected)return;
+  var s=projByName.get(String(projSelected));if(!s||!s.id)return;
+  var stage=$('psStage')?$('psStage').value:'',pri=$('psPri')?$('psPri').value:'';
+  var deadline=$('psDeadline')?($('psDeadline').value||null):null;if(deadline==='')deadline=null;
+  var note=$('psNote')?($('psNote').value||'').trim():'';
+  var btn=$('psSave');projSaving=true;
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving'}
+  var done=function(){projSaving=false;if(btn){btn.disabled=false;btn.textContent='Save'}};
+  var payload={stage:stage,priority:pri,deadline:deadline,note:note};
+  apiUpdate(PROJ_TABLE,s.id,payload).then(function(row){
+    upsertProj(row||Object.assign({id:s.id,name:s.name},payload));   /* upsertProj also refreshes projStatus cache */
+    done();renderProjList();renderProjReader(projSelected);toast('Project saved');
+  }).catch(function(e){done();toast((e&&e.message)||'Save failed',true)});
+}
+function projDelete(){
+  if(projSaving||!projSelected)return;
+  var s=projByName.get(String(projSelected));if(!s||!s.id)return;
+  if(!confirm('Delete project "'+s.name+'"? This cannot be undone.'))return;
+  var btn=$('psDel');projSaving=true;
+  if(btn){btn.disabled=true;btn.innerHTML='<span class="spin"></span>Deleting'}
+  apiDelete(PROJ_TABLE,s.id).then(function(){
+    projRows=(projRows||[]).filter(function(r){return String(r.id)!==String(s.id)});
+    rebuildProjIndex();cacheSetAsync('projStatus',projRows);   /* keep read-cache consistent with the delete */
+    projSaving=false;projSelected=null;projReaderMode=false;
+    var w=$('projWrap');if(w)w.classList.remove('reading');
+    renderProjList();renderProjReaderPane();toast('Project deleted');
+  }).catch(function(e){projSaving=false;if(btn){btn.disabled=false;btn.textContent='Delete project'}toast((e&&e.message)||'Delete failed',true)});
+}
+/* ---- New project: reuses the shared modal (#mask/#modal); submitForm() delegates here ---- */
+function projNewForm(){
+  projFormMode=true;
+  $('modalTitle').innerHTML=svg('<path d="M12 5v14M5 12h14"/>',16)+'New project';
+  $('modalForm').innerHTML=''
+    +'<div class="fld full"><label>Name</label><input id="f_pname" type="text" placeholder="Project name"></div>'
+    +'<div class="fld"><label>Stage</label><select id="f_pstage">'+libOpts(PROJ_STAGES,'Idea')+'</select></div>'
+    +'<div class="fld"><label>Priority</label><select id="f_ppri">'+libOpts(PRI,'P1')+'</select></div>'
+    +'<div class="fld"><label>Deadline</label><input id="f_pdeadline" type="date"></div>'
+    +'<div class="fld full"><label>Note</label><textarea id="f_pnote" placeholder="Optional note…"></textarea></div>';
+  $('mask').classList.add('on');
+  setTimeout(function(){var el=$('f_pname');if(el)el.focus()},60);
+}
+function projSubmitNew(){
+  var name=($('f_pname')?$('f_pname').value:'').trim().replace(/\.md$/i,'');
+  if(!name){toast('Project name is required',true);return}
+  if(projByName.has(name)){toast('A project named “'+name+'” already exists',true);return}
+  var payload={name:name,
+    stage:$('f_pstage')?$('f_pstage').value:'Idea',
+    priority:$('f_ppri')?$('f_ppri').value:'P1',
+    deadline:($('f_pdeadline')&&$('f_pdeadline').value)?$('f_pdeadline').value:null,
+    note:$('f_pnote')?($('f_pnote').value||'').trim():''};
+  var btn=$('modalSave');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving';
+  var done=function(){btn.disabled=false;btn.textContent='Save'};
+  apiInsert(PROJ_TABLE,payload).then(function(row){
+    upsertProj(row||payload);done();closeForm();renderProjList();projSelect((row&&row.name)||name);toast('Project created');
+  }).catch(function(e){done();toast((e&&e.message)||'Create failed',true)});
+}
+/* ---- Related work aggregation across the six module tables (only when a status id exists) ---- */
+function projRelatedInit(name){
+  var s=projByName.get(name);
+  if(!s||!s.id)return '<div class="lib-ph" style="padding:20px 12px">No related work yet.</div>';
+  if(projRelated&&projRelatedFor===s.id&&typeof projRelated==='object')return projRelatedHtml(projRelated);
+  return '<div class="lib-ph" style="padding:20px 12px"><span class="spin dark"></span></div>';
+}
+function projLoadRelated(id){
+  projRelatedFor=id;projRelated='loading';
+  Promise.all(MODS.map(function(mod){
+    return apiFetch(SUPA_URL+'/rest/v1/'+TABLE[mod]+'?project_id=eq.'+encodeURIComponent(id)+'&order=created_at.asc',{method:'GET'})
+      .then(function(r){return r.ok?r.json():[]}).catch(function(){return []});
+  })).then(function(res){
+    if(projRelatedFor!==id)return;   /* selection moved on */
+    var map={};MODS.forEach(function(mod,i){map[mod]=res[i]||[]});
+    projRelated=map;
+    var c=$('projRelEl');if(c)c.innerHTML=projRelatedHtml(map);
+  });
+}
+function projRelatedHtml(map){
+  var groups=MODS.filter(function(mod){return (map[mod]||[]).length});
+  if(!groups.length)return '<div class="lib-ph" style="padding:20px 12px">No related work yet.</div>';
+  return groups.map(function(mod){
+    var rows=map[mod];
+    return '<div class="proj-grp"><div class="gh">'+esc(REL_LABEL[mod])+'<span class="gc">'+rows.length+'</span></div>'
+      +rows.map(function(x){
+        var title=x[REL_TITLE[mod]]||'(untitled)';
+        var dl=x.deadline?'<span class="tag tag-lo">'+esc(x.deadline)+'</span>':'';
+        return '<a class="proj-rrow" href="'+REL_HREF[mod]+'?project='+encodeURIComponent(projRelatedFor)+'">'
+          +'<span class="rt">'+esc(String(title))+'</span>'+statusPill(x.status)+dl+'</a>';
+      }).join('')
+      +'</div>';
+  }).join('');
+}
+function projFilter(v){projSearch=v;renderProjList()}
+function projBack(){projReaderMode=false;var w=$('projWrap');if(w)w.classList.remove('reading')}
+function projRefresh(){if(projRows===null){var el=$('projListEl');if(el)el.innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>'}ensureProjects(true).then(function(){renderProjList();renderProjReaderPane()});toast('Reloading projects…')}
+window.projSelect=projSelect;window.projPick=projPick;window.projFilter=projFilter;window.projBack=projBack;window.projRefresh=projRefresh;
+window.projSaveDetail=projSaveDetail;window.projDelete=projDelete;window.projNewForm=projNewForm;
+function openProj(n){location.hash='#/projects?note='+encodeURIComponent(String(n||'').replace(/\.md$/i,''))}
+window.openProj=openProj;
+
+/* ============ Advance / reschedule ============ */
+function advance(type,id){
+  var x=find(type,id);if(!x)return;var chain=ADV[type];if(!chain)return;
+  var i=chain.indexOf(x.status);if(i<0||i>=chain.length-1){toast('Already at the final stage');return}
+  var patch={status:chain[i+1]};
+  if(type==='writing'&&chain[i+1]==='Final')patch.progress=100;
+  apiUpdate(TABLE[type],id,patch).then(function(row){
+    mergeRow(type,id,row||patch);rerender();toast('Advanced to '+patch.status);
+  }).catch(errToast);
+}
+function rescheduleToday(type,id){
+  var t=todayStr();
+  apiUpdate(TABLE[type],id,{deadline:t}).then(function(row){
+    mergeRow(type,id,row||{deadline:t});rerender();toast('Rescheduled to today');
+  }).catch(errToast);
+}
+window.advance=advance;window.rescheduleToday=rescheduleToday;
+
+/* ============ CRUD ============ */
+function delItem(type,id){
+  var x=find(type,id);if(!x)return;
+  var name=x[TITLE_KEY[type]]||MOD_NAME[type];
+  if(!confirm('Delete "'+name+'"? This cannot be undone.'))return;
+  apiDelete(TABLE[type],id).then(function(){
+    db[type]=(db[type]||[]).filter(function(r){return String(r.id)!==String(id)});
+    rerender();toast('Deleted');
+  }).catch(errToast);
+}
+window.delItem=delItem;
+
+function mergeRow(type,id,patch){
+  var a=db[type]||[];for(var i=0;i<a.length;i++)if(String(a[i].id)===String(id)){for(var k in patch)a[i][k]=patch[k];return}
+}
+function errToast(e){toast((e&&e.message)||'Something went wrong',true)}
+
+/* ============ Modal form ============ */
+function openForm(type,id){
+  editType=type;editId=id||null;
+  var rec=id?find(type,id):null;
+  $('modalTitle').innerHTML=svg('<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',16)+(id?'Edit ':'New ')+MOD_NAME[type];
+  var fieldsHtml=FIELDS[type].map(function(f){
+    var full=(f.type==='textarea'||f.type==='text')?' full':'';
+    var val=rec?rec[f.k]:'';if(val==null)val='';
+    var ctrl;
+    if(f.type==='select'){
+      ctrl='<select id="f_'+f.k+'">'+f.opts.map(function(o){return '<option'+(String(val)===o?' selected':'')+'>'+esc(o)+'</option>'}).join('')+'</select>';
+    }else if(f.type==='textarea'){
+      ctrl='<textarea id="f_'+f.k+'" placeholder="'+esc(f.ph||'')+'">'+esc(val)+'</textarea>';
+    }else{
+      var t=f.type==='number'?'number':(f.type==='date'?'date':'text');
+      ctrl='<input id="f_'+f.k+'" type="'+t+'" value="'+esc(val)+'" placeholder="'+esc(f.ph||'')+'"'+(f.type==='number'?' inputmode="numeric" min="0"':'')+'>';
+    }
+    return '<div class="fld'+full+'"><label>'+esc(f.label)+'</label>'+ctrl+'</div>';
+  }).join('');
+  /* project assignment: every module form gets a Project select (value = project_id) */
+  fieldsHtml+='<div class="fld full"><label>Project</label>'+projSelectHtml('f_project_id',rec?rec.project_id:'')+'</div>';
+  $('modalForm').innerHTML=fieldsHtml;
+  $('mask').classList.add('on');
+  setTimeout(function(){var first=$('modalForm').querySelector('input,select,textarea');if(first&&first.type!=='date')first.focus()},60);
+}
+function closeForm(){$('mask').classList.remove('on');editType=null;editId=null;projFormMode=false}
+window.openForm=openForm;window.closeForm=closeForm;
+
+function submitForm(){
+  if(projFormMode)return projSubmitNew();   /* Projects use the shared modal but their own save path */
+  if(!editType)return;
+  var type=editType,payload={},titleKey=TITLE_KEY[type];
+  FIELDS[type].forEach(function(f){
+    var el=$('f_'+f.k);if(!el)return;var v=el.value;
+    if(f.type==='number'){
+      if(v===''||v==null)v=null;else{v=(f.k==='progress')?clampPct(v):parseInt(v,10);if(typeof v==='number'&&isNaN(v))v=null}
+    }else if(f.type==='date'){v=v||null}
+    else{v=(v==null?'':v).trim()}
+    payload[f.k]=v;
+  });
+  var pel=$('f_project_id');if(pel)payload.project_id=pel.value?pel.value:null;   /* null clears assignment */
+  if(!payload[titleKey]){toast('The title field is required',true);return}
+  var btn=$('modalSave');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Saving';
+  var done=function(){btn.disabled=false;btn.textContent='Save'};
+  if(editId){
+    var id=editId;
+    apiUpdate(TABLE[type],id,payload).then(function(row){
+      mergeRow(type,id,row||payload);done();closeForm();rerender();toast('Saved');
+    }).catch(function(e){done();errToast(e)});
+  }else{
+    apiInsert(TABLE[type],payload).then(function(row){
+      (db[type]=db[type]||[]).push(row);done();closeForm();rerender();toast('Added');
+    }).catch(function(e){done();errToast(e)});
+  }
+}
+window.submitForm=submitForm;
+
+/* ============ Export backup ============ */
+function exportBackup(){
+  var btn=$('exportBtn');btn.disabled=true;
+  Promise.all(MODS.map(function(m){return apiGet(TABLE[m])}))
+    .then(function(res){
+      var payload={exported_at:new Date().toISOString(),account:(auth&&auth.email)||''};
+      MODS.forEach(function(m,i){payload[m]=res[i]});
+      var blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+      var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+      a.download='research-desk-backup-'+todayStr()+'.json';document.body.appendChild(a);a.click();
+      setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
+      btn.disabled=false;toast('Backup downloaded');
+    }).catch(function(e){btn.disabled=false;errToast(e)});
+}
+window.exportBackup=exportBackup;
+
+/* ============ Masthead date ============ */
+function roman(n){if(n<1)n=1;var m=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']],r='';for(var i=0;i<m.length;i++){while(n>=m[i][0]){r+=m[i][1];n-=m[i][0]}}return r}
+function todayLabel(){
+  var w=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];var d=new Date();
+  $('todayLabel').textContent=w[d.getDay()]+', '+d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  $('volLabel').textContent='Vol. '+roman(d.getFullYear()-2019)+' · No. '+(d.getMonth()+1);
+}
+
+/* ============ Boot ============ */
+function boot(){
+  setAuthMode(false);
+  loadSession();
+  if(auth&&auth.access_token){
+    if(auth.expires_at&&Date.now()>auth.expires_at-60000){
+      refreshToken().then(function(ok){if(ok)enterApp();else forceSignIn()});
+    }else{enterApp()}
+  }else{
+    showAuthView();
+  }
+}
+boot();
+})();
+</script>
+</body>
+</html>

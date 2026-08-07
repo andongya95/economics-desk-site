@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4F46E5">
+<title>Research Hub · Lab Workbench</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#F6F7F9;--bg-2:#EEF0F4;--surface:#FFFFFF;
+  --border:#EAEBEF;--border-strong:#D6D9E0;--ring:#E4E6EC;
+  --text:#0E1116;--muted:#5B6472;--faint:#98A0AE;
+  --primary:#4F46E5;--primary-strong:#4338CA;--primary-2:#6366F1;--primary-bg:#EEF1FF;--primary-bg2:#E3E7FF;
+  --green:#12A150;--green-bg:#ECFDF3;--green-bd:#BBF0CF;
+  --red:#E0343B;--red-bg:#FEF1F1;--red-bd:#F8CDCE;
+  --amber:#D98207;--amber-bg:#FFF8EC;--amber-bd:#FBE2B0;--amber-tx:#8A5A08;
+  --gray-bg:#F1F2F5;--gray-bg2:#E8EAEF;
+  --radius:16px;--radius-sm:10px;--radius-xs:8px;
+  --shadow-sm:0 1px 2px rgba(16,20,30,.06);
+  --shadow:0 1px 3px rgba(16,20,30,.05),0 1px 2px rgba(16,20,30,.03);
+  --shadow-md:0 4px 16px -4px rgba(16,20,30,.10),0 2px 6px -2px rgba(16,20,30,.06);
+  --shadow-lg:0 20px 48px -12px rgba(16,20,30,.24);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14.5px;line-height:1.55;
+  padding-bottom:calc(env(safe-area-inset-bottom) + 32px);
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+  background-image:radial-gradient(1100px 460px at 50% -220px,rgba(99,102,241,.10),transparent 70%)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+/* Header — sticky glass */
+header{background:rgba(255,255,255,.72);backdrop-filter:saturate(180%) blur(14px);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  border-bottom:1px solid rgba(16,20,30,.07);position:sticky;top:0;z-index:20}
+.hd{max-width:1080px;margin:0 auto;padding:12px 20px calc(12px + env(safe-area-inset-top,0));display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:11px;font-size:17px;font-weight:650;letter-spacing:-.02em;white-space:nowrap}
+.logo .logo-badge{width:36px;height:36px;border-radius:11px;background:linear-gradient(140deg,#818CF8,#4F46E5 60%,#4338CA);color:#fff;display:flex;align-items:center;justify-content:center;flex:none;box-shadow:0 4px 12px -2px rgba(79,70,229,.5),inset 0 1px 0 rgba(255,255,255,.25)}
+.logo .sub{font-size:10.5px;font-weight:600;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-left:3px;padding-top:2px}
+.hd .date{color:var(--muted);font-size:12.5px;margin-left:auto;font-weight:550;letter-spacing:-.01em}
+.hd-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:var(--radius-sm);
+  cursor:pointer;font-family:var(--font);font-size:14px;font-weight:550;letter-spacing:-.01em;min-height:40px;padding:0 14px;
+  transition:background .14s ease,border-color .14s ease,box-shadow .14s ease,transform .06s ease,color .14s ease;
+  text-decoration:none;white-space:nowrap}
+.btn:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(79,70,229,.28)}
+.btn:active{transform:translateY(1px)}
+.btn svg{opacity:.9}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(79,70,229,.35),inset 0 1px 0 rgba(255,255,255,.18)}
+.btn-primary:hover{background:var(--primary-strong);box-shadow:0 4px 12px -2px rgba(79,70,229,.45)}
+.btn-secondary{background:var(--surface);color:var(--text);border-color:var(--border-strong);box-shadow:var(--shadow-sm)}
+.btn-secondary:hover{background:#FBFBFD;border-color:#C3C7D2}
+.btn-ghost{background:var(--gray-bg);color:var(--text)}
+.btn-ghost:hover{background:var(--gray-bg2)}
+.btn-danger{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.btn-danger:hover{background:#FCE3E3}
+.btn-sm{min-height:34px;padding:0 11px;font-size:13px;border-radius:var(--radius-xs)}
+.btn-icon{min-width:34px;min-height:34px;padding:0 8px;background:var(--surface);border:1px solid var(--border);color:var(--faint);border-radius:var(--radius-xs)}
+.btn-icon:hover{background:var(--gray-bg);color:var(--text);border-color:var(--border-strong)}
+.btn-icon.del:hover{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+
+main{padding-top:22px}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:16px;overflow:hidden;transition:box-shadow .18s ease,border-color .18s ease}
+.card:hover{box-shadow:var(--shadow-md)}
+.card-head{display:flex;align-items:center;gap:10px;padding:15px 18px;border-bottom:1px solid var(--border)}
+.card-head h2{font-size:14px;font-weight:650;letter-spacing:-.02em;display:flex;align-items:center;gap:9px;color:var(--text)}
+.card-head h2 svg{flex:none}
+.card-head .hint{color:var(--faint);font-size:11.5px;font-weight:550;letter-spacing:-.01em}
+.card-head .sp{flex:1}
+.card-body{padding:16px 18px}
+.tip-bar{display:none;background:linear-gradient(180deg,var(--amber-bg),#FFFDF7);border:1px solid var(--amber-bd);border-radius:var(--radius-sm);padding:11px 14px;font-size:13px;margin-bottom:16px;align-items:center;gap:10px;color:var(--amber-tx);box-shadow:var(--shadow-sm)}
+.tip-bar svg{flex:none;color:var(--amber)}
+.tip-bar .sp{flex:1}
+
+/* Today focus */
+.focus-card{position:relative}
+.focus-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(var(--primary-2),var(--primary));z-index:1}
+.focus-item{display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--border);border-radius:12px;margin-bottom:9px;background:var(--surface);transition:border-color .14s ease,box-shadow .14s ease,transform .1s ease}
+.focus-item:last-child{margin-bottom:0}
+.focus-item:hover{border-color:var(--border-strong);box-shadow:var(--shadow-sm)}
+.focus-item.overdue{border-color:var(--red-bd);background:linear-gradient(180deg,var(--red-bg),#FFF7F7)}
+.focus-item .txt{flex:1;min-width:0}
+.focus-item .txt .t{font-weight:600;font-size:14px;word-break:break-word;letter-spacing:-.01em}
+.focus-item .txt .s{font-size:12px;color:var(--muted);margin-top:2px}
+.focus-item.overdue .t{color:#B91C1C}
+
+/* Tags / pills */
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:650;border-radius:999px;padding:3px 10px;white-space:nowrap;flex:none;letter-spacing:.01em;line-height:1.35;border:1px solid transparent}
+.tag-od{background:var(--red);color:#fff;box-shadow:0 1px 2px rgba(224,52,59,.35)}
+.tag-due{background:var(--amber);color:#fff;box-shadow:0 1px 2px rgba(217,130,7,.3)}
+.tag-soon{background:var(--primary);color:#fff;box-shadow:0 1px 2px rgba(79,70,229,.3)}
+.tag-p0{background:var(--red);color:#fff}.tag-p1{background:var(--amber);color:#fff}.tag-p2{background:var(--gray-bg2);color:#4B5563}
+.tag-st{background:var(--primary-bg);color:var(--primary-strong);border-color:var(--primary-bg2)}
+.tag-ok{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.tag-hi{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.tag-md{background:var(--amber-bg);color:var(--amber-tx);border-color:var(--amber-bd)}
+.tag-lo{background:var(--gray-bg);color:var(--muted);border-color:var(--gray-bg2)}
+.tag-ghost{background:var(--gray-bg);color:var(--muted);border-color:var(--gray-bg2)}
+
+/* Overview */
+.ov-grid{display:grid;grid-template-columns:230px 1fr;gap:16px}
+.ov-ring{display:flex;align-items:center;gap:16px;background:linear-gradient(160deg,var(--primary-bg),var(--primary-bg2));border:1px solid var(--primary-bg2);border-radius:14px;padding:18px;flex-direction:column;justify-content:center}
+.ov-ring .cap{font-size:13px;color:var(--primary-strong);font-weight:650;letter-spacing:-.01em}
+.ov-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}
+.ov-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;display:flex;align-items:center;gap:12px;transition:border-color .14s ease,box-shadow .14s ease,transform .1s ease}
+.ov-card:hover{border-color:var(--border-strong);box-shadow:var(--shadow-sm);transform:translateY(-1px)}
+.ov-card .ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.ov-card .n{font-size:20px;font-weight:700;line-height:1.1;letter-spacing:-.03em}
+.ov-card .l{font-size:11.5px;color:var(--muted);font-weight:550;margin-top:1px}
+
+/* Grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* Items */
+.item{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border);border-radius:8px;transition:background .12s ease}
+.item:first-child{padding-top:2px}
+.item:last-child{border-bottom:none;padding-bottom:2px}
+.item .body{flex:1;min-width:0}
+.item .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.item .title{font-weight:600;font-size:14px;letter-spacing:-.01em;word-break:break-word}
+.item .meta{font-size:12.5px;color:var(--muted);margin-top:4px;display:flex;gap:6px;flex-wrap:wrap}
+.item .meta span{background:var(--gray-bg);border-radius:6px;padding:1px 8px}
+.item .note{font-size:12.5px;color:var(--muted);background:var(--gray-bg);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px 11px;margin-top:8px;word-break:break-word;line-height:1.5}
+.item .ops{display:flex;gap:6px;flex:none}
+.item.done .title{text-decoration:line-through;color:var(--faint)}
+.item.od{border-left:3px solid var(--red);padding-left:12px;margin-left:-2px;background:linear-gradient(90deg,var(--red-bg),transparent 40%)}
+.empty{text-align:center;color:var(--faint);padding:34px 12px;font-size:13.5px;line-height:1.5}
+.empty svg{display:block;margin:0 auto 12px;opacity:.5;color:var(--primary-2)}
+
+/* Forms */
+input,select,textarea{font-family:var(--font);font-size:16px;color:var(--text);background:var(--surface);border:1px solid var(--border-strong);border-radius:var(--radius-sm);padding:11px 13px;width:100%;outline:none;transition:border-color .14s ease,box-shadow .14s ease}
+input::placeholder,textarea::placeholder{color:var(--faint)}
+input:hover,select:hover,textarea:hover{border-color:#C3C7D2}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
+textarea{min-height:74px;resize:vertical;line-height:1.5}
+.frm-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld.full{grid-column:1/-1}
+.fld label{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:-.01em}
+
+/* Modal */
+.mask{position:fixed;inset:0;background:rgba(16,20,30,.42);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.mask.on{display:flex;animation:fade .18s ease}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.modal{background:var(--surface);width:100%;max-width:540px;border-radius:20px 20px 0 0;max-height:90vh;overflow:auto;padding:22px 20px calc(env(safe-area-inset-bottom) + 20px);box-shadow:var(--shadow-lg);animation:slideup .24s cubic-bezier(.22,1,.36,1)}
+@keyframes slideup{from{transform:translateY(24px)}to{transform:translateY(0)}}
+.modal h3{font-size:16.5px;font-weight:650;margin-bottom:16px;display:flex;align-items:center;gap:9px;letter-spacing:-.02em}
+.modal-ft{display:flex;gap:10px;margin-top:18px}
+.modal-ft .btn{flex:1;min-height:44px}
+@media(min-width:640px){.mask{align-items:center;padding:20px}.modal{border-radius:20px;animation:pop .2s cubic-bezier(.22,1,.36,1)}@keyframes pop{from{transform:scale(.97);opacity:.6}to{transform:scale(1);opacity:1}}}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 30px);transform:translateX(-50%) translateY(20px);
+  background:#151A22;color:#fff;padding:11px 20px;border-radius:12px;font-size:13.5px;font-weight:500;opacity:0;pointer-events:none;
+  transition:opacity .25s ease,transform .25s ease;z-index:200;white-space:nowrap;box-shadow:0 10px 30px -6px rgba(16,20,30,.4),inset 0 1px 0 rgba(255,255,255,.08)}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+footer{text-align:center;color:var(--faint);font-size:12px;padding:12px 16px 32px;letter-spacing:-.01em}
+
+/* Sync */
+.sync-card{position:relative}
+.sync-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(#34D399,var(--green));z-index:1}
+.sync-status{display:flex;align-items:center;gap:9px;font-size:13px;padding:11px 14px;border-radius:var(--radius-sm);margin-bottom:14px;flex-wrap:wrap;font-weight:550;border:1px solid transparent}
+.sync-status .dot{width:8px;height:8px;border-radius:50%;flex:none;position:relative}
+.sync-off{background:var(--gray-bg);color:var(--muted);border-color:var(--gray-bg2)}
+.sync-off .dot{background:var(--faint)}
+.sync-on{background:var(--green-bg);color:var(--green);border-color:var(--green-bd)}
+.sync-on .dot{background:var(--green);box-shadow:0 0 0 3px rgba(18,161,80,.18)}
+.sync-err{background:var(--red-bg);color:var(--red);border-color:var(--red-bd)}
+.sync-err .dot{background:var(--red);box-shadow:0 0 0 3px rgba(224,52,59,.18)}
+.sync-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sync-key-box{display:flex;gap:8px;align-items:flex-end}
+.sync-key-box input{flex:1;min-width:0}
+.sync-note{font-size:12px;color:var(--muted);margin-top:12px;background:var(--gray-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;line-height:1.55}
+
+@media(max-width:767px){
+  .wrap{padding:0 16px}
+  .grid2{grid-template-columns:1fr}
+  .ov-grid{grid-template-columns:1fr}
+  .ov-cards{grid-template-columns:repeat(2,1fr)}
+  .frm-grid{grid-template-columns:1fr}
+  .sync-form{grid-template-columns:1fr}
+  .hd .date{display:none}
+  .card-body{padding:14px 15px}
+  .card-head{padding:14px 15px}
+  .btn{padding:0 12px}
+}
+@media(max-width:380px){.ov-cards{grid-template-columns:1fr}.sync-key-box{flex-wrap:wrap}.sync-key-box input{width:100%}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hd">
+    <div class="logo">
+      <span class="logo-badge"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.3L4.5 18a2 2 0 002 3h11a2 2 0 002-3L14 9.3V2"/><path d="M8.5 2h7"/><path d="M7 15h10"/></svg></span>
+      <span>Research Hub</span>
+      <span class="sub">Lab Workbench</span>
+    </div>
+    <span class="date" id="todayLabel"></span>
+    <div class="hd-actions">
+      <button class="btn btn-secondary" onclick="exportJSON()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 21h16"/></svg>Export backup</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V9m0 0l-4 4m4-4l4 4"/><path d="M4 3h16"/></svg>Import</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="tip-bar" id="backupTip">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4m0 4h.01"/></svg>
+    <span id="backupTipText"></span>
+    <span class="sp"></span>
+    <button class="btn btn-sm" style="background:#fff;color:#92400E;border:1px solid var(--amber-bd)" onclick="exportJSON()">Back up now</button>
+  </div>
+
+  <section class="card focus-card">
+    <div class="card-head">
+      <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Today's focus</h2>
+      <span class="hint" id="todayHint"></span>
+      <span class="sp"></span>
+      <button class="btn btn-sm btn-secondary" onclick="openForm('todos')">+ Add task</button>
+    </div>
+    <div class="card-body" id="todayList"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head"><h2>Overview</h2><span class="sp"></span></div>
+    <div class="card-body">
+      <div class="ov-grid">
+        <div class="ov-ring" id="ringWrap"></div>
+        <div class="ov-cards">
+          <div class="ov-card"><span class="ic" style="background:var(--primary-bg);color:var(--primary)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg></span><div><div class="n" id="ovPapers">0</div><div class="l">Active papers</div></div></div>
+          <div class="ov-card"><span class="ic" style="background:var(--green-bg);color:var(--green)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg></span><div><div class="n" id="ovRead">0</div><div class="l">Literature read / <span id="ovLitTotal">0</span></div></div></div>
+          <div class="ov-card"><span class="ic" style="background:var(--amber-bg);color:var(--amber)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.3L4.5 18a2 2 0 002 3h11a2 2 0 002-3L14 9.3V2"/><path d="M8.5 2h7"/></svg></span><div><div class="n" id="ovExp">0</div><div class="l">Experiments (7d)</div></div></div>
+          <div class="ov-card"><span class="ic" style="background:var(--red-bg);color:var(--red)"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4m0 4h.01"/></svg></span><div><div class="n" id="ovOverdue">0</div><div class="l">Overdue items</div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="grid2">
+    <section class="card">
+      <div class="card-head">
+        <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>Papers</h2>
+        <span class="sp"></span>
+        <button class="btn btn-sm btn-primary" onclick="openForm('papers')">+ Add paper</button>
+      </div>
+      <div class="card-body" id="papersList"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>Literature</h2>
+        <span class="sp"></span>
+        <button class="btn btn-sm btn-primary" onclick="openForm('literature')">+ Add paper</button>
+      </div>
+      <div class="card-body" id="litList"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.3L4.5 18a2 2 0 002 3h11a2 2 0 002-3L14 9.3V2"/><path d="M8.5 2h7"/><path d="M7 15h10"/></svg>Experiments</h2>
+        <span class="sp"></span>
+        <button class="btn btn-sm btn-primary" onclick="openForm('experiments')">+ Add run</button>
+      </div>
+      <div class="card-body" id="expList"></div>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Todos</h2>
+        <span class="sp"></span>
+        <button class="btn btn-sm btn-primary" onclick="openForm('todos')">+ Add todo</button>
+      </div>
+      <div class="card-body" id="todoList"></div>
+    </section>
+  </div>
+
+  <section class="card sync-card">
+    <div class="card-head">
+      <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 019 9"/><path d="M3 12a9 9 0 019-9"/><path d="M12 21a9 9 0 019-9"/><path d="M3 12a9 9 0 019 9"/></svg>Cloud sync</h2>
+      <span class="hint">Cross-device auto backup</span>
+      <span class="sp"></span>
+    </div>
+    <div class="card-body">
+      <div class="sync-status sync-off" id="syncStatus"><span class="dot"></span><span id="syncStatusText">Not connected · data stored locally only</span></div>
+      <div class="sync-form" id="syncForm">
+        <div class="fld"><label>Supabase URL</label><input id="suUrl" value="https://cklcfpodnrhktkhrqgkd.supabase.co" autocomplete="off"></div>
+        <div class="fld"><label>Anon key</label><input id="suKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNrbGNmcG9kbnJoa3RraHJxZ2tkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU5MzQxNTEsImV4cCI6MjEwMTUxMDE1MX0.UHzUK1b6jxnovS1Gqoj8GNdRjGu1yXAoSKX5U1kRuXs" autocomplete="off"></div>
+        <div class="fld full"><label>Sync key <span style="font-weight:400;color:var(--faint)">(same on all devices; leave blank to generate)</span></label><div class="sync-key-box"><input id="suSyncKey" placeholder="Auto-generate if blank" autocomplete="off"><button class="btn btn-primary" onclick="connectSync()">Connect</button><button class="btn btn-ghost" onclick="disconnectSync()">Disconnect</button></div></div>
+      </div>
+      <div class="sync-note">The sync key is the credential to your data — keep it private. Once connected, changes upload within 5s and the cloud is polled every 30s. Works offline, catches up automatically.</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Data &amp; backup</h2>
+    </div>
+    <div class="card-body" style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-secondary" onclick="exportJSON()">Export JSON backup</button>
+      <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">Import restore</button>
+      <button class="btn btn-ghost" onclick="clearDemo()">Clear demo data</button>
+      <button class="btn btn-danger" onclick="clearAll()">Clear all data</button>
+    </div>
+  </section>
+</main>
+
+<footer>Data lives in your browser · Export regularly · Use Import to migrate between devices</footer>
+
+<input type="file" id="importFile" accept="application/json" style="display:none" onchange="handleImport(event)">
+
+<div class="mask" id="mask" onclick="if(event.target===this)closeForm()">
+  <div class="modal">
+    <h3 id="modalTitle"></h3>
+    <div class="frm-grid" id="modalForm"></div>
+    <div class="modal-ft">
+      <button class="btn btn-ghost" onclick="closeForm()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitForm()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var KEY='wb_research_';
+var STAGES=['Idea','Literature Review','Experiments','Draft','Revision','Submitted','Published'];
+var LIT_STATUS=['To Read','Reading','Read'];
+var IMP=['High','Medium','Low'];
+var EXP_STATUS=['In Progress','Done'];
+var PRI=['P0','P1','P2'];
+var db={papers:[],literature:[],experiments:[],todos:[]};
+var editId=null,editType=null;
+
+/* legacy Chinese values -> English (one-time migration on load) */
+var LEGACY_STAGE={'选题':'Idea','文献综述':'Literature Review','实验':'Experiments','初稿':'Draft','修改':'Revision','已投稿':'Submitted','已录用':'Published'};
+var LEGACY_LIT={'待读':'To Read','精读中':'Reading','已读':'Read'};
+var LEGACY_IMP={'高':'High','中':'Medium','低':'Low'};
+var LEGACY_EXP={'进行中':'In Progress','已完成':'Done'};
+function migrate(){
+  var changed=false;
+  db.papers.forEach(function(p){if(p.stage&&LEGACY_STAGE[p.stage]){p.stage=LEGACY_STAGE[p.stage];changed=true}});
+  db.literature.forEach(function(x){
+    if(x.status&&LEGACY_LIT[x.status]){x.status=LEGACY_LIT[x.status];changed=true}
+    if(x.importance&&LEGACY_IMP[x.importance]){x.importance=LEGACY_IMP[x.importance];changed=true}
+  });
+  db.experiments.forEach(function(e){if(e.status&&LEGACY_EXP[e.status]){e.status=LEGACY_EXP[e.status];changed=true}});
+  if(changed)save();
+}
+
+var FIELDS={
+  papers:[
+    {k:'title',label:'Paper title *',type:'text',ph:'e.g. Graph-based protein interaction prediction'},
+    {k:'stage',label:'Current stage',type:'select',opts:STAGES},
+    {k:'journal',label:'Target journal',type:'text',ph:'e.g. Nature Communications'},
+    {k:'deadline',label:'Due date',type:'date'},
+    {k:'note',label:'Notes',type:'textarea',ph:'Progress / open questions…'}
+  ],
+  literature:[
+    {k:'title',label:'Title *',type:'text',ph:'e.g. Attention Is All You Need'},
+    {k:'author',label:'Authors / Year',type:'text',ph:'e.g. Vaswani et al., 2017'},
+    {k:'tag',label:'Topic tag',type:'text',ph:'e.g. NLP / CV / GNN'},
+    {k:'status',label:'Reading status',type:'select',opts:LIT_STATUS},
+    {k:'importance',label:'Importance',type:'select',opts:IMP},
+    {k:'note',label:'Notes',type:'textarea',ph:'Key ideas / citable findings…'}
+  ],
+  experiments:[
+    {k:'name',label:'Experiment name *',type:'text',ph:'e.g. ResNet50 baseline'},
+    {k:'date',label:'Date',type:'date'},
+    {k:'condition',label:'Conditions / params',type:'text',ph:'e.g. lr=0.01, batch=64'},
+    {k:'result',label:'Result summary',type:'textarea',ph:'Key metrics / conclusions…'},
+    {k:'status',label:'Status',type:'select',opts:EXP_STATUS}
+  ],
+  todos:[
+    {k:'text',label:'Task *',type:'text',ph:'e.g. Prepare lab-meeting slides'},
+    {k:'priority',label:'Priority',type:'select',opts:PRI},
+    {k:'deadline',label:'Due date',type:'date'}
+  ]
+};
+
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function fmt(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function todayStr(){return fmt(new Date())}
+function addDays(s,n){var d=new Date(s+'T00:00:00');d.setDate(d.getDate()+n);return fmt(d)}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function load(){try{var s=localStorage.getItem(KEY+'db');if(s){db=JSON.parse(s);db.papers=db.papers||[];db.literature=db.literature||[];db.experiments=db.experiments||[];db.todos=db.todos||[]}}catch(e){}}
+function save(){try{localStorage.setItem(KEY+'db',JSON.stringify(db));localStorage.setItem(KEY+'meta',new Date().toISOString());if(sync.on)syncPush()}catch(e){toast('Storage failed: quota exceeded')}}
+function total(){return db.papers.length+db.literature.length+db.experiments.length+db.todos.length}
+
+function seed(){
+  var t=todayStr();
+  db.papers=[
+    {id:uid(),title:'Multimodal remote-sensing image classification',stage:'Revision',journal:'Remote Sensing',deadline:addDays(t,-3),note:'Reviewer comments returned; focus on the experiment comparison section',demo:true},
+    {id:uid(),title:'Graph neural networks for protein interaction prediction',stage:'Experiments',journal:'Science Bulletin',deadline:t,note:'Finish the ablation runs today and log results',demo:true},
+    {id:uid(),title:'A survey of few-shot semantic segmentation',stage:'Draft',journal:'Journal of Computer Science',deadline:addDays(t,2),note:'Draft still missing conclusion & future work',demo:true}
+  ];
+  db.literature=[
+    {id:uid(),title:'Attention Is All You Need',author:'Vaswani et al., 2017',tag:'NLP',status:'Reading',importance:'High',note:'Original Transformer paper — focus on multi-head attention & positional encoding',demo:true},
+    {id:uid(),title:'Deep Residual Learning for Image Recognition',author:'He et al., 2016',tag:'CV',status:'Read',importance:'High',note:'ResNet skip connections; citable for experiment comparison',demo:true},
+    {id:uid(),title:'A Survey of Graph Neural Networks',author:'Wu et al., 2021',tag:'GNN',status:'To Read',importance:'Medium',note:'Candidate for next lab-meeting paper discussion',demo:true}
+  ];
+  db.experiments=[
+    {id:uid(),name:'ResNet50 baseline training',date:addDays(t,-1),condition:'lr=0.01, batch=64, 50 epochs',result:'val_acc 91.2%, loss converged',status:'Done',demo:true},
+    {id:uid(),name:'Ablation — remove attention module',date:t,condition:'Same settings as baseline',result:'Training; waiting for convergence before comparison',status:'In Progress',demo:true}
+  ];
+  db.todos=[
+    {id:uid(),text:'Summarize last week\'s experiment data for advisor',priority:'P0',deadline:addDays(t,-1),done:false,demo:true},
+    {id:uid(),text:'Prepare Friday lab-meeting presentation',priority:'P1',deadline:t,done:false,demo:true},
+    {id:uid(),text:'Reply to collaborator email',priority:'P2',deadline:addDays(t,2),done:false,demo:true}
+  ];
+  save();
+}
+
+function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove('on')},2200)}
+function todayLabel(){var w=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];var d=new Date();document.getElementById('todayLabel').textContent=w[d.getDay()]+', '+d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+
+function collectToday(){
+  var t=todayStr(),items=[];
+  db.papers.forEach(function(p){
+    if(p.stage==='Published'||!p.deadline)return;
+    if(p.deadline<t)items.push({kind:'overdue',type:'paper',id:p.id,title:p.title,sub:'Paper due '+p.deadline,extra:'Stage: '+p.stage});
+    else if(p.deadline===t)items.push({kind:'due',type:'paper',id:p.id,title:p.title,sub:'Paper due today',extra:'Stage: '+p.stage});
+    else if(p.deadline<=addDays(t,3))items.push({kind:'soon',type:'paper',id:p.id,title:p.title,sub:'Due '+p.deadline,extra:'Stage: '+p.stage});
+  });
+  db.todos.forEach(function(x){
+    if(x.done||!x.deadline)return;
+    if(x.deadline<t)items.push({kind:'overdue',type:'todo',id:x.id,title:x.text,sub:'Overdue since '+x.deadline,extra:'Priority '+x.priority});
+    else if(x.deadline===t)items.push({kind:'due',type:'todo',id:x.id,title:x.text,sub:'Due today',extra:'Priority '+x.priority});
+    else if(x.deadline<=addDays(t,3))items.push({kind:'soon',type:'todo',id:x.id,title:x.text,sub:'Due '+x.deadline,extra:'Priority '+x.priority});
+  });
+  items.sort(function(a,b){var o={overdue:0,due:1,soon:2};return o[a.kind]-o[b.kind]});
+  return items;
+}
+
+function renderToday(){
+  var items=collectToday(),el=document.getElementById('todayList');
+  var od=items.filter(function(i){return i.kind==='overdue'}).length;
+  var du=items.filter(function(i){return i.kind==='due'}).length;
+  var so=items.filter(function(i){return i.kind==='soon'}).length;
+  document.getElementById('todayHint').textContent=od+' overdue · '+du+' due today · '+so+' within 3 days';
+  if(!items.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 64 64" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M32 6l22 11v14c0 12-9 22-22 27C19 53 10 43 10 31V17z"/><path d="M21 32l8 8 15-16"/></svg>All caught up — nothing overdue or due soon</div>';return}
+  el.innerHTML=items.map(function(i){
+    var k=i.kind,label=k==='overdue'?'Overdue':(k==='due'?'Due today':'Soon');
+    var btn=i.type==='todo'?'<button class="btn btn-sm btn-primary" onclick="completeTodo(\''+i.id+'\')">Done</button>'
+      :'<button class="btn btn-sm btn-primary" onclick="advancePaper(\''+i.id+'\')">Advance</button>';
+    return '<div class="focus-item '+(k==='overdue'?'overdue':'')+'">'
+      +'<span class="tag '+(k==='overdue'?'tag-od':k==='due'?'tag-due':'tag-soon')+'">'+label+'</span>'
+      +'<div class="txt"><div class="t">'+esc(i.title)+'</div><div class="s">'+esc(i.sub)+' · '+esc(i.extra)+'</div></div>'
+      +btn+'</div>';
+  }).join('');
+}
+
+function renderOverview(){
+  var t=todayStr();
+  var active=db.papers.filter(function(p){return p.stage!=='Published'}).length;
+  var litT=db.literature.length,read=db.literature.filter(function(x){return x.status==='Read'}).length;
+  var week=addDays(t,-7);
+  var expW=db.experiments.filter(function(e){return e.date>=week&&e.date<=t}).length;
+  var od=collectToday().filter(function(i){return i.kind==='overdue'}).length;
+  document.getElementById('ovPapers').textContent=active;
+  document.getElementById('ovRead').textContent=read;
+  document.getElementById('ovLitTotal').textContent=litT;
+  document.getElementById('ovExp').textContent=expW;
+  document.getElementById('ovOverdue').textContent=od;
+  var dTotal=db.todos.length,ddone=db.todos.filter(function(x){return x.done}).length;
+  var pct=dTotal?Math.round(ddone/dTotal*100):0;
+  var C=2*Math.PI*42,off=C*(1-pct/100),color=pct===100?'#16A34A':'#4F46E5';
+  document.getElementById('ringWrap').innerHTML=
+    '<div style="position:relative;width:112px;height:112px;flex:none">'
+    +'<svg viewBox="0 0 120 120" width="112" height="112"><circle cx="60" cy="60" r="42" fill="none" stroke="#E0E7FF" stroke-width="9"/><circle cx="60" cy="60" r="42" fill="none" stroke="'+color+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'" transform="rotate(-90 60 60)"/></svg>'
+    +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:22px;font-weight:700;color:var(--text)">'+pct+'%</span><span style="font-size:10px;color:var(--muted);font-weight:500">todos done</span></div></div>'
+    +'<div style="text-align:center"><div class="cap">Todo completion</div><div style="font-size:12px;color:var(--muted);margin-top:4px">'+ddone+' / '+dTotal+' done</div><div style="font-size:12px;color:var(--red);margin-top:2px">'+od+' overdue</div></div>';
+}
+
+function renderPapers(){
+  var el=document.getElementById('papersList'),list=db.papers.slice().reverse();
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 64 64" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v20M14 22H4v30a6 6 0 006 6h20a6 6 0 006-6V22H26"/><path d="M14 22H4M14 2L26 22"/><path d="M10 30h12M10 38h12"/></svg>No papers yet — add your first one</div>';return}
+  el.innerHTML=list.map(function(p){
+    var od=p.deadline&&p.deadline<todayStr()&&p.stage!=='Published';
+    return '<div class="item'+(od?' od':'')+'">'
+    +'<div class="body"><div class="row1"><span class="title">'+esc(p.title)+'</span><span class="tag tag-st">'+esc(p.stage)+'</span>'+(od?'<span class="tag tag-od">Overdue</span>':'')+'</div>'
+    +'<div class="meta">'+(p.journal?'<span>'+esc(p.journal)+'</span>':'')+(p.deadline?'<span>Due '+esc(p.deadline)+'</span>':'')+'</div>'
+    +(p.note?'<div class="note">'+esc(p.note)+'</div>':'')
+    +'</div><div class="ops">'
+    +(p.stage!=='Published'?'<button class="btn btn-sm btn-primary" onclick="advancePaper(\''+p.id+'\')">Advance</button>':'')
+    +'<button class="btn btn-sm btn-ghost" onclick="openForm(\'papers\',\''+p.id+'\')">Edit</button>'
+    +'<button class="btn btn-icon del" onclick="delItem(\'papers\',\''+p.id+'\')" title="Delete"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'
+    +'</div></div>';
+  }).join('');
+}
+
+function renderLit(){
+  var el=document.getElementById('litList'),list=db.literature.slice().reverse();
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 64 64" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 8h24a8 8 0 018 8v40a8 8 0 00-8-8H8z"/><path d="M56 8H32a8 8 0 00-8 8v40"/></svg>Library is empty — add a paper to start your reading list</div>';return}
+  el.innerHTML=list.map(function(x){
+    return '<div class="item"><div class="body"><div class="row1"><span class="title">'+esc(x.title)+'</span>'
+    +'<span class="tag '+(x.status==='Read'?'tag-ok':x.status==='Reading'?'tag-st':'tag-ghost')+'">'+esc(x.status)+'</span>'
+    +'<span class="tag '+(x.importance==='High'?'tag-hi':x.importance==='Medium'?'tag-md':'tag-lo')+'">'+esc(x.importance)+'</span>'
+    +'</div><div class="meta">'+(x.author?'<span>'+esc(x.author)+'</span>':'')+(x.tag?'<span>#'+esc(x.tag)+'</span>':'')+'</div>'
+    +(x.note?'<div class="note">'+esc(x.note)+'</div>':'')
+    +'</div><div class="ops">'
+    +'<button class="btn btn-sm btn-ghost" onclick="openForm(\'literature\',\''+x.id+'\')">Edit</button>'
+    +'<button class="btn btn-icon del" onclick="delItem(\'literature\',\''+x.id+'\')" title="Delete"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'
+    +'</div></div>';
+  }).join('');
+}
+
+function renderExp(){
+  var el=document.getElementById('expList'),list=db.experiments.slice().reverse();
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 64 64" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4h20M26 4v14L12 44a6 6 0 006 8h28a6 6 0 006-8L38 18V4"/><path d="M16 42h32"/></svg>No experiments logged yet</div>';return}
+  el.innerHTML=list.map(function(e){
+    return '<div class="item"><div class="body"><div class="row1"><span class="title">'+esc(e.name)+'</span>'
+    +'<span class="tag '+(e.status==='Done'?'tag-ok':'tag-st')+'">'+esc(e.status)+'</span>'
+    +(e.date?'<span class="tag tag-ghost">'+esc(e.date)+'</span>':'')
+    +'</div>'
+    +(e.condition?'<div class="meta"><span>'+esc(e.condition)+'</span></div>':'')
+    +(e.result?'<div class="note">'+esc(e.result)+'</div>':'')
+    +'</div><div class="ops">'
+    +'<button class="btn btn-sm btn-ghost" onclick="openForm(\'experiments\',\''+e.id+'\')">Edit</button>'
+    +'<button class="btn btn-icon del" onclick="delItem(\'experiments\',\''+e.id+'\')" title="Delete"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'
+    +'</div></div>';
+  }).join('');
+}
+
+function renderTodos(){
+  var el=document.getElementById('todoList'),list=db.todos.slice().reverse();
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 64 64" width="46" height="46" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="32" cy="32" r="26"/><path d="M21 33l8 8 15-17"/></svg>No todos — all done!</div>';return}
+  el.innerHTML=list.map(function(x){
+    var od=x.deadline&&x.deadline<todayStr()&&!x.done;
+    return '<div class="item'+(x.done?' done':'')+'"><div class="body"><div class="row1">'
+    +'<span class="tag tag-p'+x.priority.slice(1)+'">'+esc(x.priority)+'</span>'
+    +'<span class="title">'+esc(x.text)+'</span>'
+    +(od?'<span class="tag tag-od">Overdue</span>':'')
+    +'</div>'+(x.deadline?'<div class="meta">Due '+esc(x.deadline)+'</div>':'')+'</div><div class="ops">'
+    +(!x.done?'<button class="btn btn-sm btn-primary" onclick="completeTodo(\''+x.id+'\')">Done</button>':'')
+    +'<button class="btn btn-sm btn-ghost" onclick="openForm(\'todos\',\''+x.id+'\')">Edit</button>'
+    +'<button class="btn btn-icon del" onclick="delItem(\'todos\',\''+x.id+'\')" title="Delete"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'
+    +'</div></div>';
+  }).join('');
+}
+
+function renderAll(){renderToday();renderOverview();renderPapers();renderLit();renderExp();renderTodos();checkTip()}
+
+function checkTip(){
+  var n=total(),el=document.getElementById('backupTip');
+  if(n>=30){el.style.display='flex';document.getElementById('backupTipText').textContent='You now have '+n+' records — consider exporting a backup so you never lose your data'}
+  else el.style.display='none';
+}
+
+function openForm(type,id){
+  editType=type;editId=id||null;
+  var fields=FIELDS[type],item=null;
+  if(id){var arr=db[type];for(var i=0;i<arr.length;i++)if(arr[i].id===id)item=arr[i]}
+  var names={papers:'Paper',literature:'Literature',experiments:'Experiment',todos:'Todo'};
+  document.getElementById('modalTitle').innerHTML='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>'+(id?'Edit ':'Add ')+names[type];
+  document.getElementById('modalForm').innerHTML=fields.map(function(f){
+    var v=item?item[f.k]:'';
+    if(f.type==='select'){
+      var opts=f.opts.map(function(o){return '<option value="'+o+'"'+(v===o?' selected':'')+'>'+o+'</option>'}).join('');
+      return '<div class="fld"><label>'+f.label+'</label><select id="f_'+f.k+'">'+opts+'</select></div>';
+    }
+    if(f.type==='textarea')return '<div class="fld full"><label>'+f.label+'</label><textarea id="f_'+f.k+'" placeholder="'+(f.ph||'')+'">'+esc(v)+'</textarea></div>';
+    return '<div class="fld'+(type==='todos'&&f.k==='text'?' full':'')+'"><label>'+f.label+'</label><input type="'+f.type+'" id="f_'+f.k+'" value="'+esc(v)+'" placeholder="'+(f.ph||'')+'"></div>';
+  }).join('');
+  document.getElementById('mask').classList.add('on');
+  var first=document.querySelector('#modalForm input,#modalForm select,#modalForm textarea');
+  if(first&&first.type!=='date')setTimeout(function(){first.focus()},100);
+}
+
+function submitForm(){
+  var fields=FIELDS[editType],data={};
+  for(var i=0;i<fields.length;i++){var f=fields[i];data[f.k]=document.getElementById('f_'+f.k).value.trim()}
+  var req={papers:'title',literature:'title',experiments:'name',todos:'text'}[editType];
+  if(!data[req]){toast('Please fill in the required field');return}
+  var arr=db[editType];
+  if(editId){for(var j=0;j<arr.length;j++)if(arr[j].id===editId)Object.assign(arr[j],data)}
+  else {data.id=uid();data.done=false;arr.push(data)}
+  save();renderAll();closeForm();toast('Saved');
+}
+
+function closeForm(){document.getElementById('mask').classList.remove('on');editId=null;editType=null}
+
+function delItem(type,id){
+  if(!confirm('Delete this record?'))return;
+  db[type]=db[type].filter(function(x){return x.id!==id});
+  save();renderAll();toast('Deleted');
+}
+
+function advancePaper(id){
+  var p=null;for(var i=0;i<db.papers.length;i++)if(db.papers[i].id===id)p=db.papers[i];
+  if(!p)return;
+  var idx=STAGES.indexOf(p.stage);
+  if(idx<0||idx>=STAGES.length-1){toast('Already at the final stage');return}
+  p.stage=STAGES[idx+1];
+  save();renderAll();
+  toast('Advanced to "'+p.stage+'"');
+}
+
+function completeTodo(id){
+  for(var i=0;i<db.todos.length;i++)if(db.todos[i].id===id){db.todos[i].done=true;break}
+  save();renderAll();toast('Marked as done');
+}
+
+function exportJSON(){
+  var blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='research-hub-backup-'+todayStr()+'.json';
+  document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(a.href);
+  toast('Backup exported');
+}
+
+function handleImport(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var data=JSON.parse(r.result);
+      if(!data||!data.papers||!data.literature||!data.experiments||!data.todos)throw new Error('bad');
+      if(!confirm('Importing will replace all current data. Continue?')){e.target.value='';return}
+      db=data;migrate();save();renderAll();toast('Imported '+total()+' records');
+    }catch(err){toast('Import failed: invalid file')}
+    e.target.value='';
+  };
+  r.readAsText(f);
+}
+
+function clearDemo(){
+  if(!confirm('Clear all demo data? (your own records are kept)'))return;
+  db.papers=db.papers.filter(function(x){return !x.demo});
+  db.literature=db.literature.filter(function(x){return !x.demo});
+  db.experiments=db.experiments.filter(function(x){return !x.demo});
+  db.todos=db.todos.filter(function(x){return !x.demo});
+  save();renderAll();toast('Demo data cleared');
+}
+
+function clearAll(){
+  if(!confirm('This will permanently delete ALL data! Export a backup first. Continue?'))return;
+  if(!confirm('Really delete everything?'))return;
+  db={papers:[],literature:[],experiments:[],todos:[]};
+  save();renderAll();toast('All data cleared');
+}
+
+/* ===== Cloud sync ===== */
+var sync={url:'',key:'',syncKey:'',on:false,pushAt:0,pollTimer:null};
+function loadSync(){try{var s=localStorage.getItem(KEY+'sync');if(s){sync=JSON.parse(s);sync.on=!!(sync.url&&sync.key&&sync.syncKey)}}catch(e){}}
+function saveSync(){try{localStorage.setItem(KEY+'sync',JSON.stringify(sync))}catch(e){}}
+function genKey(){return 'wb-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,10)}
+function api(path,opts){
+  opts=opts||{};
+  opts.headers=Object.assign({apikey:sync.key,'Authorization':'Bearer '+sync.key,'Content-Type':'application/json'},opts.headers||{});
+  return fetch(sync.url.replace(/\/$/,'')+'/rest/v1/wb_sync'+path,opts);
+}
+function renderSyncUI(state){
+  var el=document.getElementById('syncStatus'),tx=document.getElementById('syncStatusText');
+  el.className='sync-status '+(state==='ok'?'sync-on':state==='err'?'sync-err':'sync-off');
+  if(sync.on){
+    if(state==='err'){tx.textContent='Sync error · paused, will retry automatically'}
+    else {tx.textContent='Connected · synced '+ (sync.lastTxt||'just now') +' · auto-aligns every 30s'}
+  } else tx.textContent='Not connected · data stored locally only';
+}
+function startPoll(){clearInterval(sync.pollTimer);sync.pollTimer=setInterval(function(){syncPull()},30000)}
+function connectSync(){
+  var url=document.getElementById('suUrl').value.trim().replace(/\/$/,'');
+  var k=document.getElementById('suKey').value.trim();
+  var sk=document.getElementById('suSyncKey').value.trim();
+  if(!url||!k){toast('Enter Supabase URL and anon key');return}
+  if(!/^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url)){toast('URL must look like https://xxx.supabase.co');return}
+  sync.url=url;sync.key=k;
+  if(sk)sync.syncKey=sk.trim();else if(!sync.syncKey)sync.syncKey=genKey();
+  document.getElementById('suSyncKey').value=sync.syncKey;
+  saveSync();
+  testConn().then(function(ok){
+    if(ok){
+      sync.on=true;saveSync();sync.lastTxt='just now';sync.lastPush=0;
+      renderSyncUI('ok');startPoll();
+      syncPush(true);
+      toast('Connected to cloud sync');
+    }else{
+      document.getElementById('syncStatus').className='sync-status sync-err';
+      document.getElementById('syncStatusText').textContent='Connection failed · check URL / anon key, or run the setup SQL';
+      toast('Connection failed');
+    }
+  });
+}
+function disconnectSync(){
+  clearInterval(sync.pollTimer);
+  sync.on=false;saveSync();
+  document.getElementById('syncStatus').className='sync-status sync-off';
+  document.getElementById('syncStatusText').textContent='Not connected · data stored locally only';
+  toast('Cloud sync disconnected');
+}
+function testConn(){
+  return api('?select=sync_key&sync_key=eq.'+encodeURIComponent(sync.syncKey)+'&limit=1')
+    .then(function(r){return r.ok}).catch(function(){return false});
+}
+function syncPush(force){
+  if(!sync.on)return;
+  if(!force&&Date.now()-sync.pushAt<5000)return;
+  sync.pushAt=Date.now();
+  api('',{method:'POST',body:JSON.stringify({sync_key:sync.syncKey,data:db,updated_at:new Date().toISOString()}),headers:{Prefer:'resolution=merge-duplicates,return=minimal'}})
+    .then(function(r){if(!r.ok)throw new Error('push');sync.lastTxt=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});renderSyncUI('ok')})
+    .catch(function(){renderSyncUI('err')});
+}
+function syncPull(){
+  if(!sync.on)return;
+  api('?select=data,updated_at&sync_key=eq.'+encodeURIComponent(sync.syncKey)+'&limit=1')
+    .then(function(r){if(!r.ok)throw new Error('pull');return r.json()})
+    .then(function(rows){
+      if(!rows.length){syncPush(true);return}
+      var cloud=rows[0],ct=cloud.updated_at||'';
+      var lt=localStorage.getItem(KEY+'meta')||'';
+      if(ct&&ct>lt&&JSON.stringify(cloud.data)!==JSON.stringify(db)){
+        db=cloud.data;
+        db.papers=db.papers||[];db.literature=db.literature||[];db.experiments=db.experiments||[];db.todos=db.todos||[];
+        migrate();save();renderAll();toast('Synced updates from other devices');
+      }else if(lt&&lt>ct){syncPush(true)}
+      sync.lastTxt=new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      renderSyncUI('ok');
+    }).catch(function(){renderSyncUI('err')});
+}
+
+load();
+loadSync();
+migrate();
+if(!db.papers.length&&!db.literature.length&&!db.experiments.length&&!db.todos.length)seed();
+todayLabel();
+renderAll();
+if(sync.url&&sync.key&&sync.syncKey){
+  document.getElementById('suUrl').value=sync.url;
+  document.getElementById('suKey').value=sync.key;
+  document.getElementById('suSyncKey').value=sync.syncKey;
+  renderSyncUI('ok');startPoll();syncPull();
+}
+
+window.openForm=openForm;window.closeForm=closeForm;window.submitForm=submitForm;
+window.delItem=delItem;window.advancePaper=advancePaper;window.completeTodo=completeTodo;
+window.exportJSON=exportJSON;window.handleImport=handleImport;
+window.clearDemo=clearDemo;window.clearAll=clearAll;
+window.connectSync=connectSync;window.disconnectSync=disconnectSync;
+})();
+</script>
+</body>
+</html>
