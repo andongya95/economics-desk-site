@@ -431,6 +431,38 @@ footer{text-align:center;color:var(--muted);font-family:var(--serif);font-style:
 .md-body hr{border:none;border-top:1px solid var(--rule);margin:18px 0}
 .md-body img{max-width:100%;border-radius:6px}
 .md-body a{color:var(--forest)}
+/* ---- JOE job market ---- */
+.joe-sel{height:36px;border:1px solid var(--rule-2);border-radius:4px;background:var(--card);color:var(--ink);font-size:13px;padding:0 8px;cursor:pointer}
+.joe-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--rule);margin:14px 0 6px}
+.joe-stats .js-card{padding:12px 10px;border-right:1px solid var(--rule);text-align:center;background:var(--card)}
+.joe-stats .js-card:last-child{border-right:none}
+.js-card .n{font-family:var(--serif);font-size:24px;font-weight:700;display:block;color:var(--ink)}
+.js-card .l{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.joe-count{font-size:12px;color:var(--muted);margin:8px 2px 10px}
+.joe-list{display:flex;flex-direction:column;gap:8px}
+.joe-item{border:1px solid var(--rule-2);border-radius:8px;background:var(--card);padding:12px 14px;display:flex;gap:14px;align-items:center;cursor:pointer;transition:all .14s ease}
+.joe-item:hover{border-color:var(--rule);background:var(--card-2)}
+.joe-item.open{border-color:var(--navy)}
+.joe-main{flex:1;min-width:0}
+.joe-in{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--navy)}
+.joe-title{font-size:15px;font-weight:600;margin:2px 0 6px}
+.joe-tags{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.joe-loc{font-size:12px;color:var(--muted)}
+.joe-side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.joe-fit{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:999px}
+.fit-hi{background:var(--forest-bg);color:var(--forest)}
+.fit-mid{background:var(--gold-bg);color:#9A6B14}
+.fit-lo{background:var(--paper-2);color:var(--faint)}
+.joe-diff{font-size:11px;color:var(--muted)}
+.joe-deadline{font-size:12px;color:var(--faint);font-weight:600}
+.joe-deadline.od{color:var(--oxblood)}
+.joe-deadline.today{color:#9A6B14}
+.joe-detail{border:1px solid var(--rule-2);border-top:none;border-radius:0 0 8px 8px;padding:14px 16px;background:var(--paper-2);margin-top:-8px;margin-bottom:8px}
+.jd-sec{margin-bottom:12px}
+.jd-sec:last-child{margin-bottom:0}
+.jd-sec h4{font-family:var(--sans);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.jd-sec p{font-size:13px;line-height:1.6;white-space:pre-wrap;color:var(--ink-2)}
+@media(max-width:900px){.joe-stats{grid-template-columns:repeat(2,1fr)}.joe-stats .js-card:nth-child(2n){border-right:none}.joe-item{flex-direction:column;align-items:flex-start}.joe-side{flex-direction:row;align-items:center;flex-wrap:wrap}}
 /* ---- Projects (vault/projects + eco_projects status) ---- */
 .lib-file .ptags{font-size:10px;color:var(--faint);margin-top:5px;display:flex;gap:5px;flex-wrap:wrap;font-style:italic}
 .proj-chip{display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);font-size:9px;font-weight:700;
@@ -601,7 +633,8 @@ var ICON={
   writing:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
   submissions:'<path d="M3 5h18v14H3z"/><path d="M3 7l9 6 9-6"/>',
   library:'<path d="m16 6 4 14"/><path d="M12 6v14"/><path d="M8 8v12"/><path d="M4 4v16"/>',
-  projects:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 12h18"/>'
+  projects:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 12h18"/>',
+  jobs:'<path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/>'
 };
 var PAGES=[
   {id:'dashboard',label:'Dashboard',color:'var(--ink)',folio:'§ 00',accent:'var(--oxblood)'},
@@ -611,7 +644,8 @@ var PAGES=[
   {id:'data',label:'Data',color:'var(--navy)',folio:'§ 04',accent:'var(--navy)',hint:'Datasets & variables',addLabel:'+ Dataset'},
   {id:'analysis',label:'Analysis',color:'var(--gold)',folio:'§ 05',accent:'var(--gold)',hint:'Specifications & results',addLabel:'+ Specification'},
   {id:'writing',label:'Writing',color:'var(--oxblood-2)',folio:'§ 06',accent:'var(--oxblood-2)',hint:'Sections & draft progress',addLabel:'+ Section'},
-  {id:'submissions',label:'Submissions',color:'var(--forest-2)',folio:'§ 07',accent:'var(--forest-2)',hint:'Journals · status · timeline',addLabel:'+ Submission'}
+  {id:'submissions',label:'Submissions',color:'var(--forest-2)',folio:'§ 07',accent:'var(--forest-2)',hint:'Journals · status · timeline',addLabel:'+ Submission'},
+  {id:'jobs',label:'JOE',color:'var(--navy)',folio:'§ 08',accent:'var(--navy)',hint:'AEA JOE · daily posts'}
 ];
 function pageMeta(id){for(var i=0;i<PAGES.length;i++)if(PAGES[i].id===id)return PAGES[i];return null}
 
@@ -749,6 +783,29 @@ function persistProjNotes(){
 }
 
 /* ============ Auth REST ============ */
+/* 后端 API 基址：默认本机 3000；生产环境可用 localStorage('wb_eco_api_base') 覆盖 */
+var API_BASE=(function(){try{return (localStorage.getItem('wb_eco_api_base')||'http://127.0.0.1:3000').replace(/\/+$/,'')}catch(e){return 'http://127.0.0.1:3000'}})();
+var MOD_API={eco_questions:'questions',eco_data:'data',eco_analysis:'analysis',eco_writing:'writing',eco_submissions:'submissions',eco_projects:'projects',eco_literature:'literature'};
+function modOf(t){return MOD_API[t]||t}
+/* 调自家后端 API（带 Bearer；401 自动刷新重试一次） */
+function apiJson(path,opts,retried){
+  opts=opts||{};
+  return fetch(API_BASE+'/api/v1/'+path,{
+    method:opts.method||'GET',
+    headers:{'Authorization':'Bearer '+((auth&&auth.access_token)||''),'Content-Type':'application/json'},
+    body:opts.body
+  }).then(function(r){
+    if(r.status===401&&!retried){
+      return refreshToken().then(function(ok){
+        if(ok)return apiJson(path,opts,true);
+        forceSignIn();throw new Error('Session expired — please sign in again.');
+      });
+    }
+    if(!r.ok)return r.text().then(function(t){throw new Error(opts.method||'GET')+' '+path+' → '+r.status+' '+t.slice(0,160)});
+    if(r.status===204)return null;
+    return r.json();
+  });
+}
 function jsonHeaders(){return {'apikey':SUPA_ANON,'Content-Type':'application/json'}}
 function doSignup(email,pass){
   return fetch(SUPA_URL+'/auth/v1/signup',{method:'POST',headers:jsonHeaders(),body:JSON.stringify({email:email,password:pass})})
@@ -795,20 +852,16 @@ function apiFetch(url,opts,retried){
   });
 }
 function apiGet(table){
-  return apiFetch(SUPA_URL+'/rest/v1/'+table+'?order=created_at.asc',{method:'GET'})
-    .then(function(r){if(!r.ok)throw new Error('Load failed ('+r.status+')');return r.json()});
+  return apiJson(modOf(table)).then(function(r){if(!Array.isArray(r))throw new Error('Load failed');return r});
 }
 function apiInsert(table,row){
-  return apiFetch(SUPA_URL+'/rest/v1/'+table,{method:'POST',_extra:{'Prefer':'return=representation'},body:JSON.stringify(row)})
-    .then(function(r){if(!r.ok)throw new Error('Save failed ('+r.status+')');return r.json().then(function(a){return a[0]})});
+  return apiJson(modOf(table),{method:'POST',body:JSON.stringify(row)});
 }
 function apiUpdate(table,id,patch){
-  return apiFetch(SUPA_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',_extra:{'Prefer':'return=representation'},body:JSON.stringify(patch)})
-    .then(function(r){if(!r.ok)throw new Error('Update failed ('+r.status+')');return r.json().then(function(a){return a[0]})});
+  return apiJson(modOf(table)+'/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(patch)});
 }
 function apiDelete(table,id){
-  return apiFetch(SUPA_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id),{method:'DELETE'})
-    .then(function(r){if(!r.ok)throw new Error('Delete failed ('+r.status+')');return true});
+  return apiJson(modOf(table)+'/'+encodeURIComponent(id),{method:'DELETE'}).then(function(){return true});
 }
 
 /* ============ View switching ============ */
@@ -933,6 +986,7 @@ function renderPage(pid){
   if(pid==='dashboard'){renderDashboard();return}
   if(pid==='library'){renderLibrary();return}
   if(pid==='projects'){renderProjects();return}
+  if(pid==='jobs'){renderJobs();return}
   renderModulePage(pid);
 }
 function rerender(){renderPage(currentPage())}
@@ -1144,16 +1198,15 @@ function renderModulePage(pid){
 
 /* ============ Library (Obsidian literature notes via Supabase Storage) ============ */
 var LIB_BUCKET='obsidian-vault',LIB_PREFIX='vault/literature';
-/* list uses the shared apiFetch → inherits the app's 401 refresh / forceSignIn flow */
+/* Library via backend /api/v1/library（列表+状态合并 / 单篇内容） */
 function libApiList(){
-  return apiFetch(SUPA_URL+'/storage/v1/object/list/'+LIB_BUCKET,
-    {method:'POST',body:JSON.stringify({prefix:LIB_PREFIX,limit:1000,sortBy:{column:'name',order:'asc'}})})
-    .then(function(r){if(!r.ok)throw new Error('List failed ('+r.status+')');return r.json()});
+  return apiJson('library').then(function(d){
+    return (d&&d.files||[]).map(function(f){return {name:f.name,id:'file',_i:0,status:f.status||null}});
+  });
 }
 function libApiRead(name){
-  var enc=name.split('/').map(encodeURIComponent).join('/');   /* encode each segment, keep slashes */
-  return apiFetch(SUPA_URL+'/storage/v1/object/'+LIB_BUCKET+'/'+LIB_PREFIX+'/'+enc,{method:'GET'})
-    .then(function(r){if(!r.ok)throw new Error('Read failed ('+r.status+')');return r.text()});
+  var base=libParts(name).name;                                 /* strip folder + .md */
+  return apiJson('library/'+encodeURIComponent(base)).then(function(d){return d&&d.content||''});
 }
 function libParts(name){var p=name.lastIndexOf('/');var b=p>=0?name.slice(p+1):name;
   return {folder:p>=0?name.slice(0,p):'',name:b.replace(/\.md$/i,'')}}
@@ -1238,8 +1291,7 @@ function renderLibrary(){
 }
 /* Reading-status rows: file_name is the join key back to the vault note names */
 function libFetchStatus(){
-  return apiFetch(SUPA_URL+'/rest/v1/eco_literature?select=id,file_name,status,importance,note,project_id',{method:'GET'})
-    .then(function(r){if(!r.ok)throw new Error('Status load failed ('+r.status+')');return r.json()})
+  return apiJson('literature')
     .then(function(rows){
       libStatus=new Map();
       (rows||[]).forEach(function(x){if(x&&x.file_name!=null)libStatus.set(String(x.file_name),x)});
@@ -1414,8 +1466,7 @@ function upsertProj(row){
 /* fetch once; refresh with force=true. Never rejects — on failure selects fall back to "— None —" + toast. */
 function ensureProjects(force){
   if(projRows&&projRowsFresh&&!force)return Promise.resolve(projRows);   /* stale hydrated cache still refreshes */
-  return apiFetch(SUPA_URL+'/rest/v1/eco_projects?select=id,name,stage,priority,deadline,note&order=name.asc',{method:'GET'})
-    .then(function(r){if(!r.ok)throw new Error('Projects load failed ('+r.status+')');return r.json()})
+  return apiJson('projects')
     .then(function(rows){projRows=rows||[];projRowsFresh=true;rebuildProjIndex();cacheSetAsync('projStatus',projRows);return projRows})
     .catch(function(e){if(force||projRows===null)toast((e&&e.message)||'Could not load projects',true);return projRows||[]});
 }
@@ -1617,8 +1668,9 @@ function projRelatedInit(name){
 function projLoadRelated(id){
   projRelatedFor=id;projRelated='loading';
   Promise.all(MODS.map(function(mod){
-    return apiFetch(SUPA_URL+'/rest/v1/'+TABLE[mod]+'?project_id=eq.'+encodeURIComponent(id)+'&order=created_at.asc',{method:'GET'})
-      .then(function(r){return r.ok?r.json():[]}).catch(function(){return []});
+    return apiJson(modOf(TABLE[mod])).then(function(rows){
+      return (rows||[]).filter(function(x){return x.project_id===id});
+    }).catch(function(){return []});
   })).then(function(res){
     if(projRelatedFor!==id)return;   /* selection moved on */
     var map={};MODS.forEach(function(mod,i){map[mod]=res[i]||[]});
@@ -1646,6 +1698,110 @@ function projBack(){projReaderMode=false;var w=$('projWrap');if(w)w.classList.re
 function projRefresh(){if(projRows===null){var el=$('projListEl');if(el)el.innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>'}ensureProjects(true).then(function(){renderProjList();renderProjReaderPane()});toast('Reloading projects…')}
 window.projSelect=projSelect;window.projPick=projPick;window.projFilter=projFilter;window.projBack=projBack;window.projRefresh=projRefresh;
 window.projSaveDetail=projSaveDetail;window.projDelete=projDelete;window.projNewForm=projNewForm;
+
+/* ---- JOE job market (AEA JOE via joe_postings) ---- */
+var joeRows=null,joeSearch='',joeField='All',joeLevel='All',joeOpen=null,joeBusy=false,joeFresh=false;
+function joeKey(){return 'wb_eco_cache_'+((auth&&auth.user&&auth.user.id)||'anon')+'_joe'}
+function renderJobs(){
+  var m=pageMeta('jobs');
+  var flds=[],lvls=[];
+  (joeRows||[]).forEach(function(j){if(j.field&&flds.indexOf(j.field)<0)flds.push(j.field);if(j.level&&lvls.indexOf(j.level)<0)lvls.push(j.level)});
+  flds.sort();lvls.sort();
+  $('page').innerHTML=''
+    +'<div class="page-head" style="--accent:'+m.accent+'"><span class="folio">'+m.folio+'</span>'
+    +'<h1>'+svg(ICON.jobs,22)+'JOE</h1><span class="hint">AEA job market · daily sync</span><span class="sp"></span>'
+    +'<input id="joeSearch" class="lib-search" type="search" placeholder="Search title / institution / field…" value="'+esc(joeSearch)+'" oninput="joeFilter(this.value)">'
+    +'<select id="joeFieldSel" class="joe-sel" onchange="joeFieldSel(this.value)"><option value="All">All fields</option>'
+    +flds.map(function(f){return '<option value="'+esc(f)+'"'+(joeField===f?' selected':'')+'>'+esc(f)+'</option>'}).join('')+'</select>'
+    +'<select id="joeLevelSel" class="joe-sel" onchange="joeLevelSel(this.value)"><option value="All">All levels</option>'
+    +lvls.map(function(l){return '<option value="'+esc(l)+'"'+(joeLevel===l?' selected':'')+'>'+esc(l)+'</option>'}).join('')+'</select>'
+    +'<button class="btn btn-ghost btn-sm" onclick="joeRefresh()" title="Reload postings">'
+    +svg('<path d="M3 12a9 9 0 019-9 9 9 0 016.7 3M21 12a9 9 0 01-9 9 9 9 0 01-6.7-3"/><path d="M21 3v5h-5M3 21v-5h5"/>',15)+'Refresh</button></div>'
+    +'<div id="joeBody"></div>';
+  joeLoad();
+}
+function joeLoad(){
+  var el=$('joeBody');if(!el)return;
+  if(joeRows===null){
+    try{var c=JSON.parse(localStorage.getItem(joeKey()));if(c&&c.ts&&Date.now()-c.ts<86400000){joeRows=c.rows;joeFresh=false;joeRender();}}catch(e){}
+    if(joeRows===null)el.innerHTML='<div class="lib-ph"><span class="spin dark"></span></div>';
+    joeFetch();
+  } else joeRender();
+  if(joeRows&&!joeFresh)joeFetch();
+}
+function joeFetch(){
+  if(joeBusy)return;joeBusy=true;
+  apiJson('jobs?limit=2000')
+    .then(function(d){
+      joeBusy=false;joeFresh=true;joeRows=(d&&d.data)||[];
+      try{localStorage.setItem(joeKey(),JSON.stringify({ts:Date.now(),rows:joeRows}))}catch(e){}
+      if($('joeBody'))joeRender();
+    })
+    .catch(function(e){
+      joeBusy=false;var el=$('joeBody');
+      if(el&&!joeRows)el.innerHTML='<div class="lib-ph">Could not load JOE postings.<br>'+esc((e&&e.message)||'Error')+'</div>';
+      toast('JOE load failed',true);
+    });
+}
+function joeVisible(){
+  if(!joeRows)return[];
+  var q=joeSearch.toLowerCase();
+  return joeRows.filter(function(j){
+    if(joeField!=='All'&&j.field!==joeField)return false;
+    if(joeLevel!=='All'&&j.level!==joeLevel)return false;
+    if(q){var hay=((j.title||'')+' '+(j.institution||'')+' '+(j.field||'')).toLowerCase();if(hay.indexOf(q)<0)return false;}
+    return true;
+  });
+}
+function joeRender(){
+  var el=$('joeBody');if(!el)return;
+  var vis=joeVisible(),now=new Date();now.setHours(0,0,0,0);
+  var fresh7=0,open=0,fitSum=0,fitN=0;
+  (joeRows||[]).forEach(function(j){
+    if(j.posted_date){var pd=new Date(String(j.posted_date)+'T00:00:00');if(now-pd<=7*86400000)fresh7++;}
+    if(!j.deadline||new Date(String(j.deadline)+'T00:00:00')>=now)open++;
+    if(j.fit_score!=null){fitSum+=Number(j.fit_score);fitN++;}
+  });
+  var avgFit=fitN?Math.round(fitSum/fitN):0;
+  function dcl(j){if(!j.deadline)return'';var d=new Date(String(j.deadline)+'T00:00:00');return d<now?'od':(d.getTime()===now.getTime()?'today':'')}
+  function fitBadge(f){if(f==null)return'';var n=Number(f),cls=n>=60?'fit-hi':n>=40?'fit-mid':'fit-lo';return '<span class="joe-fit '+cls+'">fit '+n+'</span>'}
+  function diffBadge(d){if(d==null)return'';var n=Number(d),cls=n>=60?'diff-hi':n>=30?'diff-mid':'diff-lo';return '<span class="joe-diff '+cls+'">diff '+n+'</span>'}
+  function card(j){
+    var od=joeOpen===j.job_id,loc=j.location||j.country||'';
+    return '<div class="joe-item'+(od?' open':'')+'" onclick="joeToggle(\''+j.job_id+'\')">'
+      +'<div class="joe-main"><div class="joe-in">'+esc(j.institution||'')+'</div><div class="joe-title">'+esc(j.title||'(untitled)')+'</div>'
+      +'<div class="joe-tags">'
+      +((j.field)?'<span class="tag" style="background:var(--navy);color:#fff">'+esc(j.field)+'</span>':'')
+      +((j.level)?'<span class="tag tag-strand">'+esc(j.level)+'</span>':'')
+      +((j.position_type)?'<span class="tag tag-ghost">'+esc(j.position_type)+'</span>':'')
+      +((loc)?'<span class="joe-loc">'+esc(loc)+'</span>':'')
+      +'</div></div>'
+      +'<div class="joe-side">'+fitBadge(j.fit_score)+diffBadge(j.difficulty_score)
+      +'<span class="joe-deadline '+(dcl(j)||'')+'">'+((j.deadline)?'due '+j.deadline:'no deadline')+'</span>'
+      +'</div></div>'
+      +(od?'<div class="joe-detail">'
+        +'<div class="jd-sec"><h4>Description</h4><p>'+esc(j.description||'—')+'</p></div>'
+        +((j.requirements)?'<div class="jd-sec"><h4>Requirements</h4><p>'+esc(j.requirements)+'</p></div>':'')
+        +((j.application_portal_url)?'<div class="jd-sec"><a class="btn btn-primary btn-sm" target="_blank" rel="noopener" href="'+esc(j.application_portal_url)+'">'+svg('<path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 21h16"/>',14)+'Apply on AEA</a></div>':'')
+        +'</div>':'');
+  }
+  el.innerHTML=''
+    +'<div class="joe-stats">'
+    +'<div class="js-card"><span class="n">'+(joeRows?joeRows.length:0)+'</span><span class="l">Postings</span></div>'
+    +'<div class="js-card"><span class="n">'+fresh7+'</span><span class="l">New 7d</span></div>'
+    +'<div class="js-card"><span class="n">'+open+'</span><span class="l">Open now</span></div>'
+    +'<div class="js-card"><span class="n">'+avgFit+'</span><span class="l">Avg fit</span></div></div>'
+    +'<div class="joe-count">'+vis.length+' shown of '+(joeRows?joeRows.length:0)+'</div>'
+    +'<div class="joe-list">'
+    +(vis.length?vis.map(card).join(''):'<div class="empty">'+svg('<circle cx="12" cy="12" r="9"/><path d="M9 9h6M9 13h6"/>',46)+'No postings match your filters.</div>')
+    +'</div>';
+}
+function joeToggle(id){joeOpen=(joeOpen===id)?null:id;joeRender()}
+function joeFilter(v){joeSearch=v;joeRender()}
+function joeFieldSel(v){joeField=v;joeRender()}
+function joeLevelSel(v){joeLevel=v;joeRender()}
+function joeRefresh(){joeRows=null;joeFresh=false;renderJobs();toast('Reloading JOE…')}
+window.joeToggle=joeToggle;window.joeFilter=joeFilter;window.joeFieldSel=joeFieldSel;window.joeLevelSel=joeLevelSel;window.joeRefresh=joeRefresh;
 function openProj(n){location.hash='#/projects?note='+encodeURIComponent(String(n||'').replace(/\.md$/i,''))}
 window.openProj=openProj;
 
