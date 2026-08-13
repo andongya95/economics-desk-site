@@ -784,7 +784,7 @@ function persistProjNotes(){
 
 /* ============ Auth REST ============ */
 /* 后端 API 基址：默认本机 3000；生产环境可用 localStorage('wb_eco_api_base') 覆盖 */
-var API_BASE=(function(){try{return (localStorage.getItem('wb_eco_api_base')||'http://127.0.0.1:3000').replace(/\/+$/,'')}catch(e){return 'http://127.0.0.1:3000'}})();
+var API_BASE=(function(){try{return (localStorage.getItem('wb_eco_api_base')||'https://economics-desk-api-production.up.railway.app').replace(/\/+$/,'')}catch(e){return 'https://economics-desk-api-production.up.railway.app'}})();
 var MOD_API={eco_questions:'questions',eco_data:'data',eco_analysis:'analysis',eco_writing:'writing',eco_submissions:'submissions',eco_projects:'projects',eco_literature:'literature'};
 function modOf(t){return MOD_API[t]||t}
 /* 调自家后端 API（带 Bearer；401 自动刷新重试一次） */
